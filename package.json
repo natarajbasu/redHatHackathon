@@ -1,12 +1,12 @@
 {
-  "name": "mutualfundapp",
+  "name": "hackathonapp",
   "version": "16.0.0",
-  "description": "This is a Project for Online Trading of Shares. This is used for Buying and Selling of Shares",
+  "description": "This is a Project to used by team prometheus for Redhat hackathon",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Anupam Sarkar",
+  "author": "prometheus team",
   "license": "ISC",
   "dependencies": {
     "alert": "^5.1.4",

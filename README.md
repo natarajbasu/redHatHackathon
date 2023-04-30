@@ -1,2 +1,2 @@
 # redHatHackathon
-A repository for Red Hat Hackathon
+A repository for Red Hat Hackathon for Team Prometheus
