@@ -8,17 +8,27 @@ const session = require('express-session');
 const mysql = require('mysql2');
 
 
+const mysql_host = process.env.MYSQL_HOST||"hackathon-mysql-hackathon2023-prometheus.mycluster-wdc04-b3c-16x64-bcd9381b2e59a32911540577d00720d7-0000.us-east.containers.appdomain.cloud";
+const mysql_port = process.env.MYSQL_PORT||"30089";
+const mysql_user = process.env.MYSQL_USER||"user";
+const mysql_pass = process.env.MYSQL_PASS||"pass";
+const mysql_db = process.env.MYSQL_DB||"opdb";
+console.log("mysql_host: ",mysql_host);
+console.log("mysql_port: ",mysql_port);
+console.log("mysql_user: ",mysql_user);
+console.log("mysql_pass: ",mysql_pass);
+console.log("mysql_db: ",mysql_db);
 
 
 app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded({ extended: true })); // to support URL-encoded bodies
 
 const mySQLConnection = mysql.createConnection({
-	host: "hackathon-mysql-rhel8-hackathon2023-prometheus.mycluster-wdc04-b3c-16x64-bcd9381b2e59a32911540577d00720d7-0000.us-east.containers.appdomain.cloud",
-	port: 31490,
-	user: "user",
-	password: "pass",
-	database: "opdb"
+	host: mysql_host,
+	port: mysql_port,
+	user: mysql_user,
+	password: mysql_pass,
+	database: mysql_db
 });
 
 app.use(session({
