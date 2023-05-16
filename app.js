@@ -8,7 +8,7 @@ const session = require('express-session');
 const mysql = require('mysql2');
 
 
-const mysql_host = process.env.MYSQL_HOST||"hackathon-mysql-hackathon2023-prometheus.mycluster-wdc04-b3c-16x64-bcd9381b2e59a32911540577d00720d7-0000.us-east.containers.appdomain.cloud";
+const mysql_host = process.env.MYSQL_HOST||"mysql-hackathon2023-prometheus.mycluster-wdc04-b3c-16x64-bcd9381b2e59a32911540577d00720d7-0000.us-east.containers.appdomain.cloud";
 const mysql_port = process.env.MYSQL_PORT||"30089";
 const mysql_user = process.env.MYSQL_USER||"user";
 const mysql_pass = process.env.MYSQL_PASS||"pass";
