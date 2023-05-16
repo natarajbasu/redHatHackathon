@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-basic
+  namespace: hackathon2023-prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nodejs-basic
+  template:
+    metadata:
+      labels:
+        app: nodejs-basic
+    spec:
+      containers:
+      - name: nodejs-basic
+        image: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/nodejs:1.0
+        ports:
+        - containerPort: 8081
