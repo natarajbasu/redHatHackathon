@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
       - name: nodejs-basic
-        image: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/trav-reco-ui:1.0
+        image: image-registry.openshift-image-registry.svc:5000/hackathon2023-prometheus/trav-reco-ui:1.0
         ports:
         - containerPort: 8081
