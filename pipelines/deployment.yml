@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nodejs-basic
+  name: travel-ui
   namespace: hackathon2023-prometheus
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: nodejs-basic
+      app: travel-ui
   template:
     metadata:
       labels:
-        app: nodejs-basic
+        app: travel-ui
     spec:
       containers:
-      - name: nodejs-basic
+      - name: travel-ui
         image: image-registry.openshift-image-registry.svc:5000/hackathon2023-prometheus/trav-reco-ui:1.0
         ports:
         - containerPort: 8081
