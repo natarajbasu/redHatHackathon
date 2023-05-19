@@ -9,7 +9,7 @@ const mysql = require('mysql2');
 
 
 const mysql_host = process.env.MYSQL_HOST||"mysql-hackathon2023-prometheus.mycluster-wdc04-b3c-16x64-bcd9381b2e59a32911540577d00720d7-0000.us-east.containers.appdomain.cloud";
-const mysql_port = process.env.MYSQL_PORT||"30089";
+const mysql_port = process.env.MYSQL_PORT||"32350";
 const mysql_user = process.env.MYSQL_USER||"user";
 const mysql_pass = process.env.MYSQL_PASS||"pass";
 const mysql_db = process.env.MYSQL_DB||"opdb";
@@ -369,11 +369,11 @@ router.post('/registerInterests', function(req, res) {
             console.log(err);
             console.log(result);     
 			if (err) {
-				callStatus = { 'status': 'error', 'errorMsg': 'There is some technical issue.Please try after some time.' };
+				callStatus = { 'status': 'error', 'errorMsg': 'There is some technical issue. Please try again after some time.' };
 				res.send(callStatus);
 
 			} else {
-				req.session.register = "You have successfully register the user.";
+				req.session.register = "You have successfully registered the user.";
 				callStatus = { 'status': 'success' };
 
 				res.send(callStatus);
