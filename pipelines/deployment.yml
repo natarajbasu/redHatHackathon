@@ -17,4 +17,4 @@ spec:
       - name: travel-ui
         image: image-registry.openshift-image-registry.svc:5000/hackathon2023-prometheus/trav-reco-ui:latest
         ports:
-        - containerPort: 8081
+        - containerPort: 8000

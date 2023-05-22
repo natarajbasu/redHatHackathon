@@ -6,7 +6,7 @@ metadata:
 spec:
   ports:
     - name: port-svc
-      port: 8081
+      port: 8000
       targetPort: 8080
   selector:
     app: travel-ui
