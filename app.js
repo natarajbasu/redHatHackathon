@@ -6,29 +6,23 @@ const path = require('path');
 const router = express.Router();
 const session = require('express-session');
 const mysql = require('mysql2');
+const request = require('request');
+const subGraphURL='https://travel-recommendation-engine-hackathon2023-prometheus.mycluster-wdc04-b3c-16x64-bcd9381b2e59a32911540577d00720d7-0000.us-east.containers.appdomain.cloud/getSubGraph';
+const fullGraphURL='https://travel-recommendation-engine-hackathon2023-prometheus.mycluster-wdc04-b3c-16x64-bcd9381b2e59a32911540577d00720d7-0000.us-east.containers.appdomain.cloud/getFullGraph';
+const recomondationURL='https://travel-recommendation-engine-hackathon2023-prometheus.mycluster-wdc04-b3c-16x64-bcd9381b2e59a32911540577d00720d7-0000.us-east.containers.appdomain.cloud/getRecommendations';
 
 
-const mysql_host = process.env.MYSQL_HOST||"mysql-hackathon2023-prometheus.mycluster-wdc04-b3c-16x64-bcd9381b2e59a32911540577d00720d7-0000.us-east.containers.appdomain.cloud";
-const mysql_port = process.env.MYSQL_PORT||"32350";
-const mysql_user = process.env.MYSQL_USER||"user";
-const mysql_pass = process.env.MYSQL_PASS||"pass";
-const mysql_db = process.env.MYSQL_DB||"opdb";
-console.log("mysql_host: ",mysql_host);
-console.log("mysql_port: ",mysql_port);
-console.log("mysql_user: ",mysql_user);
-console.log("mysql_pass: ",mysql_pass);
-console.log("mysql_db: ",mysql_db);
 
 
 app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded({ extended: true })); // to support URL-encoded bodies
 
 const mySQLConnection = mysql.createConnection({
-	host: mysql_host,
-	port: mysql_port,
-	user: mysql_user,
-	password: mysql_pass,
-	database: mysql_db
+	host: "mysql-hackathon2023-prometheus.mycluster-wdc04-b3c-16x64-bcd9381b2e59a32911540577d00720d7-0000.us-east.containers.appdomain.cloud",
+	port: 32350,
+	user: "user",
+	password: "pass",
+	database: "opdb"
 });
 
 app.use(session({
@@ -54,14 +48,28 @@ router.get('/register', function(req, res) {
 	res.sendFile(path.join(__dirname + '/public/html/register.html'));
 	//__dirname : It will resolve to your project folder.
 });
+router.get('/graph', function(req, res) {
+	res.sendFile(path.join(__dirname + '/public/html/graph.html'));
+	//__dirname : It will resolve to your project folder.
+});
 
 router.post('/getSessionMessage', function(req, res) {
 	var sessionKeyValue = req.body.sessionKey;
 	var valueToBeRetruned = '';
-	if (sessionKeyValue == 'unAuthAccess') {
-		valueToBeRetruned = { 'message': req.session.unAuthAccess, 'type': ' Error' };
+	if (sessionKeyValue == 'firstPageError') {
+		var unAuthAccessMessage = req.session.unAuthAccess;
+		var loginIssueMessage = req.session.loginIssue;
+		if (unAuthAccessMessage != undefined) {
+			message = unAuthAccessMessage;
+			req.session.unAuthAccess = undefined;
+		}
+		if (loginIssueMessage != undefined) {
+			message = loginIssueMessage;
+			req.session.password = undefined;
+		}
 
-	} else if (sessionKeyValue == 'firstPage') {
+		valueToBeRetruned = { 'message': message, 'type': ' Error' };
+	} else if (sessionKeyValue == 'firstPageInfo') {
 
 		var message = '';
 		var registerMessage = req.session.register;
@@ -81,9 +89,10 @@ router.post('/getSessionMessage', function(req, res) {
 			req.session.logout = undefined;
 		}
 		valueToBeRetruned = { 'message': message, 'type': ' Message' };
-
-		res.send(valueToBeRetruned);
 	}
+
+
+	res.send(valueToBeRetruned);
 });
 router.post('/loginUser', function(req, res) {
 
@@ -112,8 +121,12 @@ router.post('/loginUser', function(req, res) {
 				callStatus = { 'status': 'error', 'errorMsg': 'There is some technical issue.' };
 			} else {
 
+
 				if (userSearchResult != null) {
 					if (userSearchResult.length == 1) {
+						req.session.loggedInUser = userSearchResult[0].firstname + ' ' + userSearchResult[0].lastname;
+						req.session.loggedInUserId = userSearchResult[0].traveller_id;
+
 						callStatus = { 'status': 'success' };
 					} else {
 						callStatus = { 'status': 'error', 'errorMsg': 'User Name or Password does not match.' };
@@ -311,13 +324,13 @@ router.post('/registerUser', function(req, res) {
 
 			res.send(callStatus);
 		}
-        var dateOfBirthDate=new Date(dateOfBirth);
-        var dateOfBirthString=dateOfBirthDate.getFullYear()+"-"+(dateOfBirthDate.getMonth()+1)+"-"+dateOfBirthDate.getDate();
-       
+		var dateOfBirthDate = new Date(dateOfBirth);
+		var dateOfBirthString = dateOfBirthDate.getFullYear() + "-" + (dateOfBirthDate.getMonth() + 1) + "-" + dateOfBirthDate.getDate();
+
 		var sql = "INSERT INTO opdb.tr_traveller VALUES (" + avaiableUserId + ",'" + firstName + "','" + lastName + "','" + userName + "','" + password + "','" + secretQues + "','" + sectAnswer + "','" + userGender + "','" + dateOfBirthString + "')";
-		
+
 		mySQLConnection.query(sql, function(err, result) {
-			
+
 			if (err) {
 				if (err.code = 'ER_DUP_ENTRY') {
 					callStatus = { 'status': 'error', 'errorMsg': 'The user name already exists in the system.Please use another user name' };
@@ -364,16 +377,15 @@ router.post('/registerInterests', function(req, res) {
 
 		}
 		sql = "INSERT INTO opdb.tr_traveller_interest VALUES " + insertData;
-        console.log(sql); 
+		
 		mySQLConnection.query(sql, function(err, result) {
-            console.log(err);
-            console.log(result);     
+			
 			if (err) {
-				callStatus = { 'status': 'error', 'errorMsg': 'There is some technical issue. Please try again after some time.' };
+				callStatus = { 'status': 'error', 'errorMsg': 'There is some technical issue.Please try after some time.' };
 				res.send(callStatus);
 
 			} else {
-				req.session.register = "You have successfully registered the user.";
+				req.session.register = "You have successfully register the user.";
 				callStatus = { 'status': 'success' };
 
 				res.send(callStatus);
@@ -381,6 +393,145 @@ router.post('/registerInterests', function(req, res) {
 
 		});
 	});
+
+});
+router.post('/populateLoginData', function(req, res) {
+	var callStatus = null;
+	var listOfFeatures = null;
+	var listOfInterests = null;
+
+	if (req.session.loggedInUserId == undefined) {
+		callStatus = { 'status': 'error' };
+		req.session.unAuthAccess = "You are not logged in yet.First You should login to access the application.";
+
+		res.send(callStatus);
+	} else {
+		mySQLConnection.connect(function(errFeature) {
+			if (errFeature) {
+
+				callStatus = { 'status': 'error', 'errorMsg': 'There is some technical issue.' };
+
+				res.send(callStatus);
+			}
+			mySQLConnection.query("SELECT * from opdb.tr_list_feature", function(errFeature, resultFeature, fields) {
+				if (errFeature) {
+					callStatus = { 'status': 'error', 'errorMsg': 'There is some technical issue in retriving the information.' };
+					res.send(callStatus);
+				}
+				listOfFeatures = resultFeature;
+
+				mySQLConnection.connect(function(errInterest) {
+					if (errInterest) {
+
+						callStatus = { 'status': 'error', 'errorMsg': 'There is some technical issue.' };
+
+						res.send(callStatus);
+					}
+					mySQLConnection.query("SELECT * FROM opdb.tr_traveller_interest where traveller_id=" + req.session.loggedInUserId, function(errInterest, resultInterset, fields) {
+						if (errInterest) {
+							callStatus = { 'status': 'error', 'errorMsg': 'There is some technical issue in retriving the information.' };
+							res.send(callStatus);
+						}
+						listOfInterests = resultInterset;
+						callStatus = { 'userName': req.session.loggedInUser, 'listOfFeatures': listOfFeatures, 'listOfInterests': listOfInterests };
+						res.send(callStatus);
+					});
+				});
+			});
+		});
+
+
+
+
+
+	}
+
+
+
+});
+router.post('/getRecomondation', function(req, res) {
+	var recomondationInputList = req.body.recomondationList;
+
+	request.post({
+		headers: { 'content-type': 'application/json' },
+		url:recomondationURL ,
+		body: recomondationInputList,
+		json: true
+	}, function(error, response, body) {
+		var callStatus = null;
+		if (error != null) {
+			callStatus = { 'status': 'error', 'errorMsg': 'There is some technical issue in retriving the information.' };
+
+		} else {
+			callStatus = { 'status': 'success', 'listOfRecomondation': body };
+		}
+
+
+		res.send(callStatus);
+	});
+
+});
+router.post('/logoutUser', function(req, res) {
+	req.session.loggedInUser = undefined;
+	req.session.loggedInUserId = undefined;
+	var finalResponse = '';
+	if (req.session.loggedInUser == undefined) {
+		finalResponse = { status: 'success' };
+		req.session.logout = 'You have been successfully logged out.';
+	} else {
+		finalResponse = { 'status': 'error', 'errorMessage': 'There is some technical issue.Please try after some time.' }
+	}
+	res.send(finalResponse);
+});
+
+router.post('/openGraph', function(req, res) {
+	var graphInput = req.body.graphInput;
+	var graphType = req.body.graphType;
+	
+
+	if (graphType == 'fullGraph') {
+
+		request.get({
+			headers: { 'content-type': 'application/json' },
+			url: fullGraphURL,
+			json: true
+		}, function(error, response, body) {
+			var callStatus = null;
+
+			if (error != null) {
+				callStatus = { 'status': 'error', 'errorMsg': 'There is some technical issue in retriving the information.' };
+
+			} else {
+				
+				callStatus = { 'status': 'success', 'graphData': body };
+			}
+
+
+			res.send(callStatus);
+		});
+
+	} else if (graphType == 'rowGraph') {
+		request.post({
+			headers: { 'content-type': 'application/json' },
+			url: subGraphURL,
+			body: JSON.parse(graphInput),
+			json: true
+		}, function(error, response, body) {
+			var callStatus = null;
+
+			if (error != null) {
+				callStatus = { 'status': 'error', 'errorMsg': 'There is some technical issue in retriving the information.' };
+
+			} else {
+				
+				callStatus = { 'status': 'success', 'graphData': body };
+			}
+
+
+			res.send(callStatus);
+		});
+	}
+
 
 });
 //add the router

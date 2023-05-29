@@ -1,14 +1,25 @@
 <!DOCTYPE html>
-<!-- Designined by CodingLab | www.youtube.com/codinglabyt -->
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="UTF-8">
-    <title>Prometheus Team Hackathon | Dashboard</title>
-    <!--<title> Responsiive Admin Dashboard | CodingLab </title>-->
-    <link rel="stylesheet" href="/public/css/style.css">
-    <!-- Boxicons CDN Link -->
-    <link href='/public/css/boxicons.css' rel='stylesheet'>
-    <link rel="stylesheet"
+<!-- saved from url=(0041)https://adminlte.io/themes/v3/index2.html -->
+<html lang="en" style="height: auto;">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prometheus Team Hackathon Portal</title>
+
+<link rel="stylesheet" href="/public/css/style.css">
+<!-- Boxicons CDN Link -->
+<link href='/public/css/boxicons.css' rel='stylesheet'>
+<link href='/public/css/popup.css' rel='stylesheet'>
+
+<link rel="stylesheet" href="/public/css/all.min.css">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="/public/css/OverlayScrollbars.min.css">
+
+<link rel="stylesheet" href="/public/css/adminlte.min.css">
+<link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
@@ -17,18 +28,386 @@
 <script
 	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
 <script
-	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.28//angular-route.min.js"></script>
-<script src="/public/javascripts/controller.js"></script>
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   </head>
-<body>
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 
-<div ng-app="prometheusHackathonModuleApp">
-<div ng-controller="homePageController">
-This is dashboard
- </div>
-</div>
+<script src="/public/javascripts/bootstrap.bundle.min.js"></script>
+
+<script
+	src="/public/javascripts/jquery.overlayScrollbars.min.js.download"></script>
+
+<script src="/public/javascripts/adminlte.js"></script>
+
+
+
+<script src="/public/javascripts/jquery.mousewheel.js.download"></script>
+<script src="/public/javascripts/raphael.min.js.download"></script>
+<script src="/public/javascripts/jquery.mapael.min.js.download"></script>
+
+
+<script src="/public/javascripts/Chart.min.js.download"></script>
+
+<script src="/public/javascripts/demo.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular-route.min.js"></script>
+<script src="/public/javascripts/controller.js"></script>
+<script src="/public/javascripts/vis-network.min.js"></script>
+
+
+<script src='https://kit.fontawesome.com/a076d05399.js'
+	crossorigin='anonymous'></script>
+
+<script src="/public/javascripts/dashboard2.js.download"></script>
+<script defer="" referrerpolicy="origin"
+	src="/public/javascripts/s.js.download"></script>
+<script nonce="3d031350-e2cf-447d-bad3-1a1c6d52f112">(function(w,d){!function(bg,bh,bi,bj){bg[bi]=bg[bi]||{};bg[bi].executed=[];bg.zaraz={deferred:[],listeners:[]};bg.zaraz.q=[];bg.zaraz._f=function(bk){return function(){var bl=Array.prototype.slice.call(arguments);bg.zaraz.q.push({m:bk,a:bl})}};for(const bm of["track","set","debug"])bg.zaraz[bm]=bg.zaraz._f(bm);bg.zaraz.init=()=>{var bn=bh.getElementsByTagName(bj)[0],bo=bh.createElement(bj),bp=bh.getElementsByTagName("title")[0];bp&&(bg[bi].t=bh.getElementsByTagName("title")[0].text);bg[bi].x=Math.random();bg[bi].w=bg.screen.width;bg[bi].h=bg.screen.height;bg[bi].j=bg.innerHeight;bg[bi].e=bg.innerWidth;bg[bi].l=bg.location.href;bg[bi].r=bh.referrer;bg[bi].k=bg.screen.colorDepth;bg[bi].n=bh.characterSet;bg[bi].o=(new Date).getTimezoneOffset();if(bg.dataLayer)for(const bt of Object.entries(Object.entries(dataLayer).reduce(((bu,bv)=>({...bu[1],...bv[1]})))))zaraz.set(bt[0],bt[1],{scope:"page"});bg[bi].q=[];for(;bg.zaraz.q.length;){const bw=bg.zaraz.q.shift();bg[bi].q.push(bw)}bo.defer=!0;for(const bx of[localStorage,sessionStorage])Object.keys(bx||{}).filter((bz=>bz.startsWith("_zaraz_"))).forEach((by=>{try{bg[bi]["z_"+by.slice(7)]=JSON.parse(bx.getItem(by))}catch{bg[bi]["z_"+by.slice(7)]=bx.getItem(by)}}));bo.referrerPolicy="origin";bo.src="/cdn-cgi/zaraz/s.js?z="+btoa(encodeURIComponent(JSON.stringify(bg[bi])));bn.parentNode.insertBefore(bo,bn)};["complete","interactive"].includes(bh.readyState)?zaraz.init():bg.addEventListener("DOMContentLoaded",zaraz.init)}(w,d,"zarazData","script");})(window,document);</script>
+
+</head>
+<body
+	class="dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed"
+	style="height: auto;">
+	<div ng-app="prometheusHackathonModuleApp">
+		<div class="wrapper" ng-controller="homePageController">
+
+			<nav class="main-header navbar navbar-expand navbar-dark">
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item d-none d-sm-inline-block">
+						<div class="profile-details">
+							<!--<img src="images/profile.jpg" alt="">-->
+							<span class="admin_name" style="color: white;">You are
+								{{userName}}</span> <span id="logoutSection"> <img
+								src="/public/images/logut.png" alt="Logout" height="35"
+								width="35" ng-click="logoutUser()"></img></span>
+
+						</div>
+					</li>
+					<li class="nav-item d-none d-sm-inline-block">
+						<div class="profile-details" id="closeDiv" ng-if="showCloseButton">
+							<!--<img src="images/profile.jpg" alt="">-->
+							<span class="admin_name" style="color: white;">Close the
+								graph</span> <span id="logoutSection"> <img
+								src="/public/images/closeButton.png" alt="Close" height="20"
+								width="20" ng-click="closeGraph()"></img>
+
+							</span>
+
+						</div>
+					</li>
+				</ul>
+			</nav>
+
+
+			<aside class="main-sidebar sidebar-dark-primary elevation-4">
+				<div
+					class="sidebar os-host os-theme-light os-host-overflow os-host-overflow-y os-host-resize-disabled os-host-scrollbar-horizontal-hidden os-host-transition"
+					style="background-color: #212529;">
+					<div class="os-resize-observer-host observed">
+						<div class="os-resize-observer" style="left: 0px; right: auto;"></div>
+					</div>
+					<div class="os-size-auto-observer observed"
+						style="height: calc(100% + 1px); float: left;">
+						<div class="os-resize-observer"></div>
+					</div>
+					<div class="os-content-glue"
+						style="margin: 0px -8px; width: 249px; height: 429px;"></div>
+					<div class="os-padding" style="width: 20%;">
+						<div class="os-viewport os-viewport-native-scrollbars-invisible"
+							style="overflow-y: scroll;">
+							<div class="os-content"
+								style="padding: 0px 8px; height: 100%; width: 100%;">
+
+
+								<div class="form-inline">
+									<div class="input-group" data-widget="sidebar-search">
+										<strong><u>Your List of Interests</u></strong>
+									</div>
+
+								</div>
+
+								<nav class="mt-2">
+									<ul class="nav nav-pills nav-sidebar flex-column"
+										data-widget="treeview" role="menu" data-accordion="false">
+										<li>
+										<li id="listOfFeatures" name="listOfFeatures"
+											ng-repeat="currentInterest in listOfInterests"
+											style="color: white; font-style: normal; font-size: medium;">
+											{{currentInterest.interest}}</li>
+									</ul>
+								</nav>
+
+							</div>
+						</div>
+					</div>
+
+
+
+				</div>
+
+			</aside>
+
+			<div class="content-wrapper" style="min-height: 487.334px;">
+
+
+
+				<div class="content-header">
+					<div class="container-fluid">
+						<div class="logo-details">
+                            <div style="font: bold; color: red;">{{errorMessage}}</div>
+				<div style="font: bold; color: green;" id="infoMSgSection">{{infoMessage}}</div>
+							<span class="logo_name">&nbsp;&nbsp;&nbsp;<strong><u>What
+										kind of vacations you are looking for?</u></strong></span>
+						</div>
+					</div>
+				</div>
+
+
+				<section class="content">
+					<div class="container-fluid">
+
+						<div class="row">
+							<div class="col-12 col-sm-6 col-md-3">
+								<div id="listOfFeaturesEvenFirst" name="listOfFeaturesEvenFirst"
+									ng-repeat="currentFeature in listOfFeaturesFirstSet"
+									style="font-weight: bold; color: white;" ng-if="$even">
+									<div class="row">
+										<div class="col-12">
+
+											<input type="checkbox" name="fetauresToSelect[]"
+												value="{{currentFeature}}"
+												ng-checked="selectedInterest.indexOf(currentFeature) > -1"
+												ng-click="toggleFeaturesSelection(currentFeature)">&nbsp;&nbsp;{{currentFeature.feature}}&nbsp;&nbsp;
+											<i class="{{currentFeature.prefimg}}" aria-hidden="true"
+												style="font-size: 24px"></i>
+
+										</div>
+
+									</div>
+
+								</div>
+
+							</div>
+							<div class="col-12 col-sm-6 col-md-3">
+								<div id="listOfFeaturesOddFirst" name="listOfFeaturesOddFirst"
+									ng-repeat="currentFeature in listOfFeaturesFirstSet"
+									style="font-weight: bold; color: white;" ng-if="$odd">
+									<div class="row">
+										<div class="col-12">
+
+											<input type="checkbox" name="fetauresToSelect[]"
+												value="{{currentFeature}}"
+												ng-checked="selectedInterest.indexOf(currentFeature) > -1"
+												ng-click="toggleFeaturesSelection(currentFeature)">&nbsp;&nbsp;{{currentFeature.feature}}&nbsp;&nbsp;
+											<i class="{{currentFeature.prefimg}}" aria-hidden="true"
+												style="font-size: 24px"></i>
+
+										</div>
+
+									</div>
+
+								</div>
+
+
+
+							</div>
+							<div class="col-12 col-sm-6 col-md-3">
+								<div id="listOfFeaturesEvensecond"
+									name="listOfFeaturesEvenSecond"
+									ng-repeat="currentFeature in listOfFeaturesSecondSet"
+									style="font-weight: bold; color: white;" ng-if="$even">
+									<div class="row">
+										<div class="col-12">
+
+											<input type="checkbox" name="fetauresToSelect[]"
+												value="{{currentFeature}}"
+												ng-checked="selectedInterest.indexOf(currentFeature) > -1"
+												ng-click="toggleFeaturesSelection(currentFeature)">&nbsp;&nbsp;{{currentFeature.feature}}&nbsp;&nbsp;
+											<i class="{{currentFeature.prefimg}}" aria-hidden="true"
+												style="font-size: 24px"></i>
+
+										</div>
+
+									</div>
+
+								</div>
+
+							</div>
+							<div class="col-12 col-sm-6 col-md-3">
+								<div id="listOfFeaturesOddSecond" name="listOfFeaturesOddSecond"
+									ng-repeat="currentFeature in listOfFeaturesSecondSet"
+									style="font-weight: bold; color: white;" ng-if="$odd">
+									<div class="row">
+										<div class="col-12">
+
+											<input type="checkbox" name="fetauresToSelect[]"
+												value="{{currentFeature}}"
+												ng-checked="selectedInterest.indexOf(currentFeature) > -1"
+												ng-click="toggleFeaturesSelection(currentFeature)">&nbsp;&nbsp;{{currentFeature.feature}}&nbsp;&nbsp;
+											<i class="{{currentFeature.prefimg}}" aria-hidden="true"
+												style="font-size: 24px"></i>
+
+										</div>
+
+									</div>
+
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-12" style="text-align: center;".>
+								<br>
+								<button type="button" class="btn btn-success"
+									ng-click="doRecomondationSearch()">
+									Get Recommendations &nbsp;&nbsp;<span class="fas fa-search"></span>
+								</button>
+
+							</div>
+						</div>
+						<div>&nbsp;</div>
+						<div class="row">
+							<div class="col-md-12">
+								<div class="card">
+									<div class="card-header">
+										<h5 class="card-title">
+											<strong><u>Detailed Result of User Interests and
+													Features</u></strong>
+										</h5>
+
+									</div>
+
+									<div class="card-body">
+										<div class="row">
+											<div class="col-md-12">
+												<div class="card">
+													<div class="card-header">
+														<h3 class="card-title">Here is your details</h3>
+													</div>
+
+													<div class="card-body">
+														<div ng-show="displayTableData">
+															<table class="table table-bordered table-hover">
+																<thead>
+																	<tr>
+																		<th>Rank</th>
+
+																		<th>Location</th>
+																		<th>State</th>
+																		<th>Page Score</th>
+																		<th>View Graph</th>
+
+																	</tr>
+																</thead>
+																<tbody>
+
+																	<tr data-widget="expandable-table"
+																		aria-expanded="false"
+																		ng-repeat-start="recomondation in listOfRecomondation"
+																		ng-click="showHideRow(recomondation.rank);">
+																		<td title="some text">{{recomondation.nodeID}}</td>
+
+																		<td title="some text">{{recomondation.nodeName}}</td>
+																		<td title="some text">{{recomondation.state}}</td>
+																		<td title="some text">{{recomondation.score}}</td>
+																		<td title="some text">
+																			<button
+																				ng-click="openGraph('rowGraph',recomondation.nodeID)"
+																				type="button" class="btn btn-success">
+																				Sub-Graph &nbsp;&nbsp;<span
+																					class="fa-sharp fa-solid fa-chart-scatter"></span>
+																			</button>
+
+
+																		</td>
+
+																	</tr>
+																	<tr class="expandable-body" ng-repeat-end
+																		ng-if="selectedRow==recomondation.rank">
+																		<td colspan="5">
+																			<table>
+																				<tbody>
+																					<tr>
+																						<td><b>Local Food:&nbsp;</b>
+																							{{recomondation.local_food}}</td>
+
+																					</tr>
+																					<tr>
+																						<td><b>Lodging Type:&nbsp;</b>
+																							{{recomondation.lodging_type}}</td>
+
+																					</tr>
+																					<tr>
+																						<td><b>Mode of Transport:&nbsp;</b>
+																							{{recomondation.mode_of_transport}}</td>
+
+																					</tr>
+																					<tr>
+																						<td><b>Possible Activities:&nbsp;</b>
+																							{{recomondation.possible_activities}}</td>
+
+																					</tr>
+																					<tr>
+																						<td><br></td>
+
+																					</tr>
+
+
+																				</tbody>
+
+																			</table>
+																		</td>
+																	</tr>
+
+
+
+
+
+																</tbody>
+															</table>
+														</div>
+
+													</div>
+													<div class="card-footer" ng-show="displayTableData">
+														<div class="row">
+															<div class="col-12" style="text-align: center;">
+
+																<button ng-click="openGraph('fullGraph','-1')"
+																	type="button" class="btn btn-success">
+																	See Full Graph &nbsp;&nbsp; <span
+																		class="fa-sharp fa-solid fa-chart-scatter"></span>
+																</button>
+
+															</div>
+														</div>
+													</div>
+
+												</div>
+
+											</div>
+
+										</div>
+
+									</div>
+
+
+									<div class="row"></div>
+
+								</div>
+				</section>
+
+			</div>
+
+			<div class="full-screen flex-container-center hidden-pop"
+				id="openPopup"></div>
+
+
+
+
+			<div id="sidebar-overlay"></div>
+		</div>
+
+
+
+
+	</div>
 
 </body>
-</html>
 
+</html>

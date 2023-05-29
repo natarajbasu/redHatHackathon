@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<!-- Designined by CodingLab | www.youtube.com/codinglabyt -->
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<title>Prometheus Team Hackathon Portal</title>
+<!--<title> Responsiive Admin Dashboard | CodingLab </title>-->
+<link rel="stylesheet" href="/public/css/style.css">
+<!-- Boxicons CDN Link -->
+<link href='/public/css/boxicons.css' rel='stylesheet'>
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.28//angular-route.min.js"></script>
+<script src="/public/javascripts/controller.js"></script>
+<script src="/public/javascripts/vis-network.min.js"></script>
+
+<script src='https://kit.fontawesome.com/a076d05399.js'
+	crossorigin='anonymous'></script>
+	
+	 <style>
+      body {
+        color: #d3d3d3;
+        font: 12pt arial;
+        background-color: #222222;
+      }
+
+      #mynetwork {
+        width: 1600;
+        height: 800px;
+        border: 1px solid #444444;
+        background-color: #222222;
+      }
+    </style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+<body>
+    <div id="mynetwork"></div>
+    <script type="text/javascript">
+      var color = "gray";
+      var len = undefined;
+
+      var nodes = [
+		{
+			"group": "interest",
+			"id": "Art and creativity",
+			"label": "Art and creativity"
+		},
+		{
+			"group": "interest",
+			"id": "Nature and the environment",
+			"label": "Nature and the environment"
+		},
+		{
+			"group": "interest",
+			"id": "Travel and exploration",
+			"label": "Travel and exploration"
+		},
+		{
+			"group": "interest",
+			"id": "Science and discovery",
+			"label": "Science and discovery"
+		},
+		{
+			"group": "location",
+			"id": "1",
+			"label": "Puducherry"
+		},
+		{
+			"group": "location",
+			"id": "2",
+			"label": "Goa"
+		},
+		{
+			"group": "location",
+			"id": "3",
+			"label": "Manali"
+		},
+		{
+			"group": "location",
+			"id": "4",
+			"label": "Darjeeling"
+		},
+		{
+			"group": "feature",
+			"id": "Beach",
+			"label": "Beach"
+		},
+		{
+			"group": "feature",
+			"id": "Shopping",
+			"label": "Shopping"
+		},
+		{
+			"group": "feature",
+			"id": "Nightlife",
+			"label": "Nightlife"
+		},
+		{
+			"group": "feature",
+			"id": "Mountains",
+			"label": "Mountains"
+		}
+	];
+      var edges = [
+		{
+			"from": "Art and creativity",
+			"to": "1"
+		},
+		{
+			"from": "Art and creativity",
+			"to": "2"
+		},
+		{
+			"from": "Art and creativity",
+			"to": "4"
+		},
+		{
+			"from": "Nature and the environment",
+			"to": "1"
+		},
+		{
+			"from": "Nature and the environment",
+			"to": "2"
+		},
+		{
+			"from": "Nature and the environment",
+			"to": "3"
+		},
+		{
+			"from": "Nature and the environment",
+			"to": "4"
+		},
+		{
+			"from": "Travel and exploration",
+			"to": "2"
+		},
+		{
+			"from": "Travel and exploration",
+			"to": "1"
+		},
+		{
+			"from": "Travel and exploration",
+			"to": "3"
+		},
+		{
+			"from": "Travel and exploration",
+			"to": "4"
+		},
+		{
+			"from": "Science and discovery",
+			"to": "2"
+		},
+		{
+			"from": "Science and discovery",
+			"to": "3"
+		},
+		{
+			"from": "1",
+			"to": "Beach"
+		},
+		{
+			"from": "1",
+			"to": "Shopping"
+		},
+		{
+			"from": "2",
+			"to": "Nightlife"
+		},
+		{
+			"from": "2",
+			"to": "Beach"
+		},
+		{
+			"from": "3",
+			"to": "Nightlife"
+		},
+		{
+			"from": "3",
+			"to": "Mountains"
+		},
+		{
+			"from": "4",
+			"to": "Shopping"
+		},
+		{
+			"from": "4",
+			"to": "Mountains"
+		}
+	];
+
+      // create a network
+      var container = document.getElementById("mynetwork");
+      var data = {
+        nodes: nodes,
+        edges: edges,
+      };
+      var options = {
+        nodes: {
+          shape: "dot",
+          size: 20,
+          font: {
+            size: 12,
+            color: "#ffffff",
+          },
+          borderWidth: 2,
+        },
+        edges: {
+          width: 2,
+        },
+      };
+      network = new vis.Network(container, data, options);
+    </script>
+  </body>
+
+
+</html>

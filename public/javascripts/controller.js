@@ -22,9 +22,10 @@ prometheusHackathonModuleApp.config(function($routeProvider) {
 
 prometheusHackathonModuleApp.controller("welcomePageController", function($scope, $http, $window) {
 	$http.post('/getSessionMessage', {
-		'sessionKey': 'unAuthAccess'
+		'sessionKey': 'firstPageError'
 
 	}).then(function(response) {
+
 		var dataRetruned = response.data;
 
 		if (dataRetruned.type.trim() == 'Error') {
@@ -35,8 +36,9 @@ prometheusHackathonModuleApp.controller("welcomePageController", function($scope
 
 	});
 
+
 	$http.post('/getSessionMessage', {
-		'sessionKey': 'firstPage'
+		'sessionKey': 'firstPageInfo'
 
 	}).then(function(response) {
 		var dataRetruned = response.data;
@@ -53,7 +55,7 @@ prometheusHackathonModuleApp.controller("welcomePageController", function($scope
 			userName: $scope.user.userName,
 			password: $scope.user.password
 		}).then(function(response) {
-			console.log(response);
+
 			var callStatus = response.data;
 			if (callStatus.status == 'success') {
 
@@ -150,20 +152,50 @@ prometheusHackathonModuleApp.controller("forgetPasswordPageController", function
 
 });
 prometheusHackathonModuleApp.controller("registrationPageController", function($scope, $http, $window) {
+	$scope.basicInformation = true;
 	$scope.selectedInterest = [];
-	$scope.toggleSelection = function toggleSelection(selectedInterest) {
-		var idx = $scope.selectedInterest.indexOf(selectedInterest);
+	$scope.chooseInterest = function chooseInterest() {
+		$scope.basicInformation = false;
+		$scope.userInterestInformation = true;
+		$scope.loginInformation = false;
 
+	};
+	$scope.loginCredentials = function loginCredentials() {
+		$scope.basicInformation = false;
+		$scope.userInterestInformation = false;
+		$scope.loginInformation = true;
+	};
+	$scope.enterBasicInformation = function enterBasicInformation() {
+
+		$scope.basicInformation = true;
+		$scope.userInterestInformation = false;
+		$scope.loginInformation = false;
+	};
+
+
+	$scope.toggleSelection = function toggleSelection(selectedInterest) {
+		var idx = $scope.selectedInterest.indexOf(selectedInterest.interest);
+         $scope.errorMessage='';  
 		// Is currently selected
+		
 		if (idx > -1) {
 			$scope.selectedInterest.splice(idx, 1);
 		}
 
 		// Is newly selected
 		else {
-			$scope.selectedInterest.push(selectedInterest.interest);
+			
+			if($scope.selectedInterest.length>=3){
+				$scope.errorMessage = "Maximum 3 seletions are allowed.";
+			}else{
+				
+				$scope.selectedInterest.push(selectedInterest.interest);
+			}
+			
+			
+			
 		}
-		console.log($scope.selectedInterest);
+
 	};
 
 	$http.post('/getUserInterestList', {
@@ -191,22 +223,130 @@ prometheusHackathonModuleApp.controller("registrationPageController", function($
 	$scope.registerUserForm = function() {
 		$scope.errorMessage = '';
 		$scope.infoMessage = '';
-		var password = $scope.register.password.trim();
-		var confirmPassword = $scope.register.confirmPassword.trim();
-		if (password != confirmPassword) {
+		var errorPresent = false;
+		var inputErrorMessage = '';
+		var password = $scope.register.password;
+		var confirmPassword = $scope.register.confirmPassword;
+		var firstName = $scope.register.firstName;
+		var lastName = $scope.register.lastName;
+		var userName = $scope.register.userName;
+		var secretQues = $scope.register.secretQues;
+		var sectAnswer = $scope.register.sectAnswer;
+		var userGender = $scope.register.userGender;
+		var dateOfBirth = $scope.register.dateOfBirth;
+		var selectedInterest = $scope.selectedInterest;
+		if (selectedInterest == undefined) {
+			errorPresent = true;
+			inputErrorMessage = "You must select minimum 1 maximum 3 user interest."
+			$scope.basicInformation = false;
+			$scope.userInterestInformation = true;
+			$scope.loginInformation = false;
+		}
+		if (password == undefined) {
+			errorPresent = true;
+			inputErrorMessage = "You must enter a password."
+			$scope.basicInformation = false;
+			$scope.userInterestInformation = false;
+			$scope.loginInformation = true;
+
+		} else {
+			password = password.trim();
+		}
+		if (confirmPassword == undefined) {
+			errorPresent = true;
+			inputErrorMessage = "You must confirm the password."
+			$scope.basicInformation = false;
+			$scope.userInterestInformation = false;
+			$scope.loginInformation = true;
+
+		} else {
+			confirmPassword = confirmPassword.trim();
+		}
+		if (userName == undefined) {
+			errorPresent = true;
+			inputErrorMessage = "You must confirm the password."
+			$scope.basicInformation = false;
+			$scope.userInterestInformation = false;
+			$scope.loginInformation = true;
+
+		} else {
+			userName = userName.trim();
+		}
+		if (firstName == undefined) {
+			errorPresent = true;
+			inputErrorMessage = "You must enter a First Name."
+			$scope.basicInformation = true;
+			$scope.userInterestInformation = false;
+			$scope.loginInformation = false;
+
+		} else {
+			firstName = firstName.trim();
+		}
+		if (lastName == undefined) {
+			errorPresent = true;
+			inputErrorMessage = "You must enter a Last Name."
+			$scope.basicInformation = true;
+			$scope.userInterestInformation = false;
+			$scope.loginInformation = false;
+
+		} else {
+			lastName = lastName.trim();
+		}
+		if (secretQues == undefined) {
+			errorPresent = true;
+			inputErrorMessage = "You must Select a Secret Question."
+			$scope.basicInformation = false;
+			$scope.userInterestInformation = false;
+			$scope.loginInformation = true;
+
+		} else {
+			secretQues = secretQues.trim();
+		}
+		if (sectAnswer == undefined) {
+			errorPresent = true;
+			inputErrorMessage = "You must answer the secret question."
+			$scope.basicInformation = false;
+			$scope.userInterestInformation = false;
+			$scope.loginInformation = true;
+
+		} else {
+			sectAnswer = sectAnswer.trim();
+		}
+		if (userGender == undefined) {
+			errorPresent = true;
+			inputErrorMessage = "You must select a gender."
+			$scope.basicInformation = true;
+			$scope.userInterestInformation = false;
+			$scope.loginInformation = false;
+
+		}
+		if (dateOfBirth == undefined) {
+			errorPresent = true;
+			inputErrorMessage = "You must enter date of Birth."
+			$scope.basicInformation = true;
+			$scope.userInterestInformation = false;
+			$scope.loginInformation = false;
+
+		}
+
+		if (errorPresent) {
+			$scope.errorMessage = inputErrorMessage;
+			$window.location.relace = '/register';
+
+		} else if (password != confirmPassword) {
 			$scope.errorMessage = 'Password and ReEntered Password are not matching. ';
 			$window.location.relace = '/register';
 
 		} else {
 			$http.post('/registerUser', {
-				firstName: $scope.register.firstName,
-				lastName: $scope.register.lastName,
-				userName: $scope.register.userName,
-				password: $scope.register.password,
-				secretQues: $scope.register.secretQues,
-				sectAnswer: $scope.register.sectAnswer,
-				userGender: $scope.register.userGender,
-				dateOfBirth: $scope.register.dateOfBirth,
+				firstName: firstName,
+				lastName: lastName,
+				userName: userName,
+				password: password,
+				secretQues: secretQues,
+				sectAnswer: sectAnswer,
+				userGender: userGender,
+				dateOfBirth: dateOfBirth,
 				avaiableUserId: $scope.avaiableUserId
 
 			}).then(function(response) {
@@ -215,21 +355,20 @@ prometheusHackathonModuleApp.controller("registrationPageController", function($
 					$scope.errorMessage = response.data.errorMsg;
 					$window.location.relace = '/register';
 				} else {
-					console.log($scope.register);
-					console.log($scope.selectedInterest);
+
 					$http.post('/registerInterests', {
 						avaiableUserId: $scope.avaiableUserId,
-						selectedInterest: $scope.selectedInterest
+						selectedInterest: selectedInterest
 					}).then(function(responsePref) {
-						var responseStatus= responsePref.data.status;
-					
-						
+						var responseStatus = responsePref.data.status;
+
+
 						if (responseStatus == 'error') {
 							$scope.errorMessage = responsePref.data.errorMsg;
 							$window.location.relace = '/register';
 						} else {
-							
-							
+
+
 							$window.location.href = '/';
 
 						}
@@ -260,6 +399,239 @@ prometheusHackathonModuleApp.controller("registrationPageController", function($
 
 });
 prometheusHackathonModuleApp.controller("homePageController", function($scope, $http, $window) {
+	$scope.interestNotAdded = true;
+	$scope.userSelection = [];
+	$scope.displayTableData = false;
+	$scope.selectedRow = null;
+	$scope.selectedRowDisplay = true;
+	$scope.currentSelectedRow = -1;
+	$scope.showCloseButton = false;
+	$scope.toggleFeaturesSelection = function toggleSelection(userSelection) {
+		var idx = $scope.userSelection.indexOf(userSelection.feature);
+         $scope.errorMessage='';
+		// Is currently selected
+
+		if (idx > -1) {
+			$scope.userSelection.splice(idx, 1);
+		}
+
+		// Is newly selected
+		else {
+			if($scope.userSelection.length>=3){
+				$scope.errorMessage='Maximum 3 selections are allowed.';
+				
+			}else{
+				$scope.userSelection.push(userSelection.feature);
+			}
+			
+			
+		}
+
+	};
+
+	$http.post('/populateLoginData', {
+
+	}).then(function(response) {
+
+		var responseStatus = response.data.status;
+
+		if (responseStatus == 'error') {
+			$window.location.href = '/';
+		} else {
+			$scope.userName = response.data.userName;
+			$scope.listOfFeatures = response.data.listOfFeatures;
+			$scope.listOfFeaturesFirstSet = [];
+			$scope.listOfFeaturesSecondSet = [];
+			for (var i = 0; i < $scope.listOfFeatures.length; i++) {
+				if (i % 2 == 0) {
+					$scope.listOfFeaturesFirstSet.push($scope.listOfFeatures[i]);
+				} else {
+					$scope.listOfFeaturesSecondSet.push($scope.listOfFeatures[i]);
+				}
+			}
+			$scope.listOfInterests = response.data.listOfInterests;
+			$window.location.relace = '/loginPage';
+		}
+
+
+
+
+	});
+	$scope.doRecomondationSearch = function doRecomondationSearch() {
+
+		if ($scope.interestNotAdded) {
+			for (var i = 0; i < $scope.listOfInterests.length; i++) {
+				var interest = $scope.listOfInterests[i].interest;
+				$scope.userSelection.push(interest);
+			}
+			$scope.interestNotAdded = false;
+
+
+		}
+
+		var userSelectionList = '';
+		for (var j = 0; j < $scope.userSelection.length; j++) {
+			var currentSelection = $scope.userSelection[j];
+			if (userSelectionList == '') {
+				userSelectionList = '"' + currentSelection + '"';
+			} else {
+				userSelectionList = userSelectionList + ',"' + currentSelection + '"';
+			}
+		}
+		userSelectionList = "[" + userSelectionList + "]";
+		var recomondationInputList = '{"featureInterestList":' + userSelectionList + '}';
+
+		$http.post('/getRecomondation', {
+			recomondationList: JSON.parse(recomondationInputList),
+
+		}).then(function(response) {
+
+			var responseStatus = response.data.status;
+
+			if (responseStatus == 'error') {
+				$scope.errorMessage = response.data.errorMsg;
+
+
+			} else {
+				var listOfRecomondation = response.data.listOfRecomondation;
+				$scope.listOfRecomondation = listOfRecomondation;
+				$scope.displayTableData = true;
+
+
+			}
+
+
+
+		});
+
+
+
+	};
+
+	$scope.showHideRow = function showHideRow(rowIndex) {
+		if ($scope.currentSelectedRow != rowIndex) {
+			$scope.selectedRow = rowIndex;
+			$scope.selectedRowDisplay = false;
+			$scope.currentSelectedRow = rowIndex;
+
+		} else {
+			if ($scope.selectedRowDisplay) {
+				$scope.selectedRow = rowIndex;
+				$scope.selectedRowDisplay = false;
+				$scope.currentSelectedRow = rowIndex;
+			} else {
+				$scope.selectedRow = -1;
+				$scope.selectedRowDisplay = true;
+				$scope.currentSelectedRow = -1;
+			}
+		}
+
+
+
+	};
+	$scope.logoutUser = function() {
+		$http.post('/logoutUser', {}).then(function(response) {
+			var dataRetruned = response.data;
+			if (dataRetruned.status = 'success') {
+				$window.location.href = '/';
+			} else {
+				$window.location.replace = '/';
+			}
+
+
+		}).catch(function(error) {
+			$window.location.replace = '/';
+
+
+		});
+	};
+	$scope.openGraph = function openGraph(graphType, locationId) {
+		var graphInput = undefined;
+
+		if (graphType == 'rowGraph') {
+
+			var userSelectionList = '';
+			if (locationId != undefined) {
+				userSelectionList = '"' + locationId + '"';
+			}
+			for (var j = 0; j < $scope.userSelection.length; j++) {
+				var currentSelection = $scope.userSelection[j];
+				if (userSelectionList == '') {
+					userSelectionList = '"' + currentSelection + '"';
+				} else {
+					userSelectionList = userSelectionList + ',"' + currentSelection + '"';
+				}
+			}
+			userSelectionList = "[" + userSelectionList + "]";
+			graphInput = '{"featureInterestLocationList":' + userSelectionList + '}';
+			//	graphInput=JSON.parse(graphInput);
+
+
+		} else if (graphType == 'fullGraph') {
+			graphInput = '';
+		}
+		$http.post('/openGraph', {
+			graphInput: graphInput,
+			graphType: graphType
+
+		}).then(function(response) {
+
+			var responseStatus = response.data.status;
+
+
+			if (responseStatus == 'error') {
+				$scope.errorMessage = response.data.errorMsg;
+
+
+			} else {
+				if (response.data.graphData.nodeList != undefined) {
+					var data = {
+						nodes: response.data.graphData.nodeList,
+						edges: response.data.graphData.edgeList,
+					};
+					var options = {
+						nodes: {
+							shape: "dot",
+							size: 20,
+							font: {
+								size: 12,
+								color: "#ffffff",
+							},
+							borderWidth: 2,
+						},
+						edges: {
+							width: 2,
+						},
+					};
+					var container = document.getElementById("openPopup");
+					network = new vis.Network(container, data, options);
+					var popUp = document.querySelector(".full-screen");
+					popUp.classList.toggle('hidden-pop');
+					$scope.showCloseButton = true;
+
+				} else {
+
+					$scope.errorMessage = 'There is some technical issue. Please try after some time.';
+				}
+
+
+			}
+
+
+
+		});
+
+
+
+
+	};
+
+	$scope.closeGraph = function closeGraph() {
+		var popUp = document.querySelector(".full-screen");
+		popUp.classList.toggle('hidden-pop');
+		$scope.showCloseButton = false;
+
+	};
 
 });
 
