@@ -154,6 +154,7 @@ prometheusHackathonModuleApp.controller("forgetPasswordPageController", function
 prometheusHackathonModuleApp.controller("registrationPageController", function($scope, $http, $window) {
 	$scope.basicInformation = true;
 	$scope.selectedInterest = [];
+	$scope.selectedInterestBackup = [];
 	$scope.chooseInterest = function chooseInterest() {
 		$scope.basicInformation = false;
 		$scope.userInterestInformation = true;
@@ -173,27 +174,54 @@ prometheusHackathonModuleApp.controller("registrationPageController", function($
 	};
 
 
-	$scope.toggleSelection = function toggleSelection(selectedInterest) {
+	$scope.toggleSelection = function toggleSelection(selectedInterest, index, typeEven, typeOdd) {
 		var idx = $scope.selectedInterest.indexOf(selectedInterest.interest);
-         $scope.errorMessage='';  
-		// Is currently selected
-		
-		if (idx > -1) {
-			$scope.selectedInterest.splice(idx, 1);
+		var idxBK = $scope.selectedInterestBackup.indexOf(selectedInterest.interest);
+		var errorUsed = false;
+
+
+		if (idxBK > -1) {
+
+			$scope.selectedInterestBackup.splice(idxBK, 1);
+			if (idxBK == 3) {
+				$scope.errorMessage = '';
+				errorUsed = true;
+			}
+
 		}
 
-		// Is newly selected
-		else {
-			
-			if($scope.selectedInterest.length>=3){
-				$scope.errorMessage = "Maximum 3 seletions are allowed.";
-			}else{
-				
+
+		if (idx > -1) {
+			$scope.selectedInterest.splice(idx, 1);
+
+
+
+		} else {
+
+			if ($scope.selectedInterest.length >= 3) {
+				if (!errorUsed) {
+					$scope.errorMessage = "Maximum 3 seletions are allowed.";
+					var elementName = '';
+					if (typeEven) {
+						elementName = 'interests_even_' + index;
+					} else if (typeOdd) {
+						elementName = 'interests_odd_' + index;
+					}
+
+					document.getElementById(elementName).checked = false;
+
+				}
+
+				$scope.selectedInterestBackup.push(selectedInterest.interest);
+			} else {
+
 				$scope.selectedInterest.push(selectedInterest.interest);
+				$scope.selectedInterestBackup.push(selectedInterest.interest);
+
 			}
-			
-			
-			
+
+
+
 		}
 
 	};
@@ -401,15 +429,28 @@ prometheusHackathonModuleApp.controller("registrationPageController", function($
 prometheusHackathonModuleApp.controller("homePageController", function($scope, $http, $window) {
 	$scope.interestNotAdded = true;
 	$scope.userSelection = [];
+	$scope.userSelectionBak = [];
 	$scope.displayTableData = false;
 	$scope.selectedRow = null;
 	$scope.selectedRowDisplay = true;
 	$scope.currentSelectedRow = -1;
 	$scope.showCloseButton = false;
-	$scope.toggleFeaturesSelection = function toggleSelection(userSelection) {
+	$scope.toggleFeaturesSelection = function toggleSelection(userSelection, index, typeEven, $typeOdd, section) {
 		var idx = $scope.userSelection.indexOf(userSelection.feature);
-         $scope.errorMessage='';
+		var idxBK = $scope.userSelectionBak.indexOf(userSelection.feature);
+		$scope.errorMessage = '';
+		var errorUsed = false;
 		// Is currently selected
+
+		if (idxBK > -1) {
+
+			$scope.userSelectionBak.splice(idxBK, 1);
+			if (idxBK == 3) {
+				$scope.errorMessage = '';
+				errorUsed = true;
+			}
+
+		}
 
 		if (idx > -1) {
 			$scope.userSelection.splice(idx, 1);
@@ -417,14 +458,40 @@ prometheusHackathonModuleApp.controller("homePageController", function($scope, $
 
 		// Is newly selected
 		else {
-			if($scope.userSelection.length>=3){
-				$scope.errorMessage='Maximum 3 selections are allowed.';
-				
-			}else{
+
+			if ($scope.userSelection.length >= 3) {
+				if (!errorUsed) {
+					$scope.errorMessage = 'Maximum 3 selections are allowed.';
+					var elementName = '';
+					if (typeEven) {
+
+						if (section == 1) {
+							elementName = 'fetauresToSelect_even_first_' + index;
+						} else if (section == 2) {
+							elementName = 'fetauresToSelect_even_second_' + index;
+						}
+
+					} else if (typeOdd) {
+						if (section == 1) {
+							elementName = 'fetauresToSelect_odd_first_' + index;
+						} else if (section == 2) {
+							elementName = 'fetauresToSelect_odd_second_' + index;
+						}
+					}
+
+
+					document.getElementById(elementName).checked = false;
+				}
+
+				console.log();
+				$scope.userSelectionBak.push(userSelection.feature);
+
+			} else {
 				$scope.userSelection.push(userSelection.feature);
+				$scope.userSelectionBak.push(userSelection.feature);
 			}
-			
-			
+
+
 		}
 
 	};

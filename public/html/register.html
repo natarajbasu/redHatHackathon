@@ -98,10 +98,10 @@
 								ng-repeat="userInterest in userInterests" ng-if="$even">
 
 
-								<input type="checkbox" name="interests[]"
+								<input type="checkbox" id="interests_even_{{$index}}" name="interests[]"
 									value="{{userInterest}}"
-									ng-checked="selectedInterest.indexOf(userInterest) > -1"
-									ng-click="toggleSelection(userInterest)">
+									ng-checked="selectedInterest.indexOf(userInterest.interest) > -1"
+									ng-click="toggleSelection(userInterest,$index,$even,$odd)">
 								&nbsp;&nbsp;{{userInterest.interest}}&nbsp;&nbsp; <i
 									class="{{userInterest.prefimg}}" aria-hidden="true"
 									style="font-size: 24px"></i>
@@ -109,10 +109,10 @@
 
 							<div style="width: 50%; float: right"
 								ng-repeat="userInterest in userInterests" ng-if="$odd">
-								<input type="checkbox" name="interests[]"
+								<input type="checkbox" id="interests_odd_{{$index}}" name="interests[]"
 									value="{{userInterest}}"
-									ng-checked="selectedInterest.indexOf(userInterest) > -1"
-									ng-click="toggleSelection(userInterest)">&nbsp;&nbsp;{{userInterest.interest}}&nbsp;&nbsp;
+									ng-checked="selectedInterest.indexOf(userInterest.interest) > -1"
+									ng-click="toggleSelection(userInterest,$index,$even,$odd)">&nbsp;&nbsp;{{userInterest.interest}}&nbsp;&nbsp;
 								<i class="{{userInterest.prefimg}}" aria-hidden="true"
 									style="font-size: 24px"></i>
 
