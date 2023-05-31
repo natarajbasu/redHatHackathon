@@ -181,12 +181,19 @@ prometheusHackathonModuleApp.controller("registrationPageController", function($
 
 
 		if (idxBK > -1) {
+			var elementName = '';
+			if (typeEven) {
+				elementName = 'interests_even_' + index;
+			} else if (typeOdd) {
+				elementName = 'interests_odd_' + index;
+			}
+
+			document.getElementById(elementName).checked = false;
 
 			$scope.selectedInterestBackup.splice(idxBK, 1);
-			if (idxBK == 3) {
-				$scope.errorMessage = '';
-				errorUsed = true;
-			}
+			$scope.errorMessage = '';
+			errorUsed = true;
+
 
 		}
 
@@ -217,6 +224,7 @@ prometheusHackathonModuleApp.controller("registrationPageController", function($
 
 				$scope.selectedInterest.push(selectedInterest.interest);
 				$scope.selectedInterestBackup.push(selectedInterest.interest);
+
 
 			}
 
@@ -435,20 +443,42 @@ prometheusHackathonModuleApp.controller("homePageController", function($scope, $
 	$scope.selectedRowDisplay = true;
 	$scope.currentSelectedRow = -1;
 	$scope.showCloseButton = false;
+	$scope.editInterest = [];
+	$scope.editInterestBackup = [];
+	$scope.disableEditInterest = true;
+	$scope.showEditButton = true;
+
 	$scope.toggleFeaturesSelection = function toggleSelection(userSelection, index, typeEven, $typeOdd, section) {
 		var idx = $scope.userSelection.indexOf(userSelection.feature);
 		var idxBK = $scope.userSelectionBak.indexOf(userSelection.feature);
 		$scope.errorMessage = '';
 		var errorUsed = false;
 		// Is currently selected
+		console.log($scope.userSelectionBak);
 
 		if (idxBK > -1) {
+			var elementName = '';
+			if (typeEven) {
+
+				if (section == 1) {
+					elementName = 'fetauresToSelect_even_first_' + index;
+				} else if (section == 2) {
+					elementName = 'fetauresToSelect_even_second_' + index;
+				}
+
+			} else if (typeOdd) {
+				if (section == 1) {
+					elementName = 'fetauresToSelect_odd_first_' + index;
+				} else if (section == 2) {
+					elementName = 'fetauresToSelect_odd_second_' + index;
+				}
+			}
+			document.getElementById(elementName).checked = false;
 
 			$scope.userSelectionBak.splice(idxBK, 1);
-			if (idxBK == 3) {
-				$scope.errorMessage = '';
-				errorUsed = true;
-			}
+			$scope.errorMessage = '';
+			errorUsed = true;
+
 
 		}
 
@@ -483,7 +513,7 @@ prometheusHackathonModuleApp.controller("homePageController", function($scope, $
 					document.getElementById(elementName).checked = false;
 				}
 
-				console.log();
+				
 				$scope.userSelectionBak.push(userSelection.feature);
 
 			} else {
@@ -517,6 +547,40 @@ prometheusHackathonModuleApp.controller("homePageController", function($scope, $
 				}
 			}
 			$scope.listOfInterests = response.data.listOfInterests;
+			$scope.listOfInterestsNames = [];
+
+			for (var j = 0; j < $scope.listOfInterests.length; j++) {
+				$scope.listOfInterestsNames.push($scope.listOfInterests[j].interest);
+			}
+
+			$http.post('/getUserInterestList', {
+
+			}).then(function(response) {
+
+				if (response.data.status == 'success') {
+					var currentListOfInterest = response.data.interests;
+					var currentListOfInterestArray = [];
+					for (var i = 0; i < currentListOfInterest.length; i++) {
+						var loopJsonObject = '';
+
+						if ($scope.listOfInterestsNames.includes(currentListOfInterest[i].interest)) {
+							loopJsonObject = { 'interest': currentListOfInterest[i].interest, 'prefimg': currentListOfInterest[i].prefimg, 'select': true };
+							
+							$scope.editInterest.push(currentListOfInterest[i].interest);
+							$scope.editInterestBackup.push(currentListOfInterest[i].interest);
+						} else {
+							loopJsonObject = { 'interest': currentListOfInterest[i].interest, 'prefimg': currentListOfInterest[i].prefimg, 'select': false };
+						}
+						currentListOfInterestArray.push(loopJsonObject);
+					}
+
+
+					$scope.editInterests = currentListOfInterestArray;
+					
+
+				}
+
+			});
 			$window.location.relace = '/loginPage';
 		}
 
@@ -524,6 +588,7 @@ prometheusHackathonModuleApp.controller("homePageController", function($scope, $
 
 
 	});
+
 	$scope.doRecomondationSearch = function doRecomondationSearch() {
 
 		if ($scope.interestNotAdded) {
@@ -699,6 +764,133 @@ prometheusHackathonModuleApp.controller("homePageController", function($scope, $
 		$scope.showCloseButton = false;
 
 	};
+	$scope.toggleEditSelection = function toggleSelection(selectedInterest, index) {
+		var idx = $scope.editInterest.indexOf(selectedInterest.interest);
+		var idxBK = $scope.editInterestBackup.indexOf(selectedInterest.interest);
+		var errorUsed = false;
+		if (idxBK > -1) {
 
+			$scope.editInterestBackup.splice(idxBK, 1);
+			var elementName = 'edit_interest_' + index;
+			document.getElementById(elementName).checked = false;
+			$scope.errorMessage = '';
+			errorUsed = true;
+
+
+		}
+
+
+		if (idx > -1) {
+			$scope.editInterest.splice(idx, 1);
+
+
+
+		} else {
+
+			if ($scope.editInterest.length >= 3) {
+				if (!errorUsed) {
+					$scope.errorMessage = "Maximum 3 seletions are allowed.";
+					var elementName = 'edit_interest_' + index;
+					document.getElementById(elementName).checked = false;
+
+				}
+
+				$scope.editInterestBackup.push(selectedInterest.interest);
+			} else {
+
+				$scope.editInterest.push(selectedInterest.interest);
+				$scope.editInterestBackup.push(selectedInterest.interest);
+
+			}
+
+
+
+		}
+
+	};
+	$scope.editUserInterest = function editUserInterest() {
+		
+		$http.post('/updateUserInterest', {}).then(function(response) {
+			var dataRetruned = response.data;
+			if (dataRetruned.status = 'success') {
+
+				$http.post('/registerInterests', {
+					selectedInterest: $scope.editInterest
+				}).then(function(responsePref) {
+					var responseStatus = responsePref.data.status;
+
+
+					if (responseStatus == 'error') {
+						$scope.errorMessage = responsePref.data.errorMsg;
+						$window.location.replace = '/loginPage';
+
+					} else {
+						$scope.infoMessage = "User Interest is successfully updated";
+						$window.location.href = '/loginPage';
+
+					}
+
+
+
+				}).catch(function(errorPref) {
+					$scope.errorMessage = 'There is some Technical issues. Please try after some time.';
+					$window.location.replace = '/loginPage';
+
+
+
+				});
+
+			} else {
+				$scope.errorMessage = dataRetruned.errorMsg;
+				$window.location.replace = '/loginPage';
+			}
+
+
+		}).catch(function(error) {
+
+			$scope.errorMessage = "There is some technical issue. Please try after some time.";
+			$window.location.replace = '/loginPage';
+		});
+
+		$scope.showEditButton = true;
+		$scope.disableEditInterest = true;
+	};
+	$scope.enableInterestEdit = function editInterest() {
+		$scope.showEditButton = false;
+		$scope.disableEditInterest = false;
+	};
+	$scope.saveLocation = function saveLocation(locationId) {
+		$http.post('/updateUserTravel', {
+			locationId: locationId
+		}).then(function(responsePref) {
+			var responseStatus = responsePref.data.status;
+			
+
+			if (responseStatus == 'error') {
+				$scope.errorMessage = responsePref.data.errorMsg;
+				$window.location.replace = '/loginPage';
+
+			} else {
+
+				$scope.infoMessage = responsePref.data.message
+				$window.location.replace = '/loginPage';
+
+			}
+
+
+
+		}).catch(function(errorPref) {
+			$scope.errorMessage = 'There is some Technical issues. Please try after some time.';
+			$window.location.replace = '/loginPage';
+			
+
+
+
+		});
+
+
+
+		window.open('https://www.makemytrip.com/');
+	};
 });
 

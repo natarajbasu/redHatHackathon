@@ -32,8 +32,7 @@
 
 <script src="/public/javascripts/bootstrap.bundle.min.js"></script>
 
-<script
-	src="/public/javascripts/jquery.overlayScrollbars.min.js.download"></script>
+
 
 <script src="/public/javascripts/adminlte.js"></script>
 
@@ -108,30 +107,42 @@
 						<div class="os-resize-observer"></div>
 					</div>
 					<div class="os-content-glue"
-						style="margin: 0px -8px; width: 249px; height: 429px;"></div>
-					<div class="os-padding" style="width: 20%;">
+						style="margin: 0px -8px; width: 349px; height: 429px;"></div>
+					<div class="os-padding" style="width: 30%;">
 						<div class="os-viewport os-viewport-native-scrollbars-invisible"
 							style="overflow-y: scroll;">
 							<div class="os-content"
 								style="padding: 0px 8px; height: 100%; width: 100%;">
 
 
+
 								<div class="form-inline">
 									<div class="input-group" data-widget="sidebar-search">
-										<strong><u>Your List of Interests</u></strong>
+										<strong><u>Edit your Interests</u></strong>&nbsp;&nbsp;&nbsp;&nbsp;
+										<span ng-show="showEditButton" ng-click="enableInterestEdit()"><i
+											class="fas fa-edit fa-lg"></i></span>
 									</div>
 
 								</div>
-
 								<nav class="mt-2">
 									<ul class="nav nav-pills nav-sidebar flex-column"
 										data-widget="treeview" role="menu" data-accordion="false">
-										<li>
+
 										<li id="listOfFeatures" name="listOfFeatures"
-											ng-repeat="currentInterest in listOfInterests"
-											style="color: white; font-style: normal; font-size: medium;">
-											{{currentInterest.interest}}</li>
+											ng-repeat="editInterest in editInterests"
+											style="color: white; font-style: normal; font-size: small;"><input
+											type="checkbox" id="edit_interest_{{$index}}"
+											ng-disabled="disableEditInterest" name="editInyterests[]"
+											value="{{editInterest}}" ng-checked="editInterest.select"
+											ng-click="toggleEditSelection(editInterest,$index)">
+											&nbsp;&nbsp;{{editInterest.interest}}&nbsp;&nbsp;</li>
+
+
 									</ul>
+									<button type="button" class="btn btn-success"
+										ng-disabled="disableEditInterest"
+										ng-click="editUserInterest()" style="size: 20px;">
+										Change Interest</button>
 								</nav>
 
 							</div>
@@ -151,8 +162,8 @@
 				<div class="content-header">
 					<div class="container-fluid">
 						<div class="logo-details">
-                            <div style="font: bold; color: red;">{{errorMessage}}</div>
-				<div style="font: bold; color: green;" id="infoMSgSection">{{infoMessage}}</div>
+							<div style="font: bold; color: red;">{{errorMessage}}</div>
+							<div style="font: bold; color: green;" id="infoMSgSection">{{infoMessage}}</div>
 							<span class="logo_name">&nbsp;&nbsp;&nbsp;<strong><u>What
 										kind of vacations you are looking for?</u></strong></span>
 						</div>
@@ -171,7 +182,8 @@
 									<div class="row">
 										<div class="col-12">
 
-											<input type="checkbox" name="fetauresToSelect[]" id="fetauresToSelect_even_first_{{$index}}"
+											<input type="checkbox" name="fetauresToSelect[]"
+												id="fetauresToSelect_even_first_{{$index}}"
 												value="{{currentFeature}}"
 												ng-checked="userSelection.indexOf(currentFeature.feature) > -1"
 												ng-click="toggleFeaturesSelection(currentFeature,$index,$even,$odd,'1')">&nbsp;&nbsp;{{currentFeature.feature}}&nbsp;&nbsp;
@@ -192,7 +204,8 @@
 									<div class="row">
 										<div class="col-12">
 
-											<input type="checkbox" name="fetauresToSelect[]" id="fetauresToSelect_odd_first_{{$index}}"
+											<input type="checkbox" name="fetauresToSelect[]"
+												id="fetauresToSelect_odd_first_{{$index}}"
 												value="{{currentFeature}}"
 												ng-checked="userSelection.indexOf(currentFeature.feature) > -1"
 												ng-click="toggleFeaturesSelection(currentFeature,$index,$even,$odd,'1')">&nbsp;&nbsp;{{currentFeature.feature}}&nbsp;&nbsp;
@@ -216,7 +229,8 @@
 									<div class="row">
 										<div class="col-12">
 
-											<input type="checkbox" name="fetauresToSelect[]" id="fetauresToSelect_even_second_{{$index}}"
+											<input type="checkbox" name="fetauresToSelect[]"
+												id="fetauresToSelect_even_second_{{$index}}"
 												value="{{currentFeature}}"
 												ng-checked="userSelection.indexOf(currentFeature.feature) > -1"
 												ng-click="toggleFeaturesSelection(currentFeature,$index,$even,$odd,'2')">&nbsp;&nbsp;{{currentFeature.feature}}&nbsp;&nbsp;
@@ -237,7 +251,8 @@
 									<div class="row">
 										<div class="col-12">
 
-											<input type="checkbox" name="fetauresToSelect[]" id="fetauresToSelect_odd_second_{{$index}}"
+											<input type="checkbox" name="fetauresToSelect[]"
+												id="fetauresToSelect_odd_second_{{$index}}"
 												value="{{currentFeature}}"
 												ng-checked="userSelection.indexOf(currentFeature.feature) > -1"
 												ng-click="toggleFeaturesSelection(currentFeature,$index,$even,$odd,'2')">&nbsp;&nbsp;{{currentFeature.feature}}&nbsp;&nbsp;
@@ -344,7 +359,15 @@
 
 																					</tr>
 																					<tr>
-																						<td><br></td>
+																						<td style="text-align: center;">
+																							<button
+																								ng-click="saveLocation(recomondation.nodeID)"
+																								type="button" class="btn btn-success">
+																								Let's go to  {{recomondation.nodeName}} &nbsp;&nbsp;<span
+																									class="fa-sharp fa-solid fa-chart-scatter"></span>
+																							</button>
+
+																						</td>
 
 																					</tr>
 

@@ -7,9 +7,9 @@ const router = express.Router();
 const session = require('express-session');
 const mysql = require('mysql2');
 const request = require('request');
-const subGraphURL='https://travel-recommendation-engine-hackathon2023-prometheus.mycluster-wdc04-b3c-16x64-bcd9381b2e59a32911540577d00720d7-0000.us-east.containers.appdomain.cloud/getSubGraph';
-const fullGraphURL='https://travel-recommendation-engine-hackathon2023-prometheus.mycluster-wdc04-b3c-16x64-bcd9381b2e59a32911540577d00720d7-0000.us-east.containers.appdomain.cloud/getFullGraph';
-const recomondationURL='https://travel-recommendation-engine-hackathon2023-prometheus.mycluster-wdc04-b3c-16x64-bcd9381b2e59a32911540577d00720d7-0000.us-east.containers.appdomain.cloud/getRecommendations';
+const subGraphURL = 'https://travel-recommendation-engine-hackathon2023-prometheus.mycluster-wdc04-b3c-16x64-bcd9381b2e59a32911540577d00720d7-0000.us-east.containers.appdomain.cloud/getSubGraph';
+const fullGraphURL = 'https://travel-recommendation-engine-hackathon2023-prometheus.mycluster-wdc04-b3c-16x64-bcd9381b2e59a32911540577d00720d7-0000.us-east.containers.appdomain.cloud/getFullGraph';
+const recomondationURL = 'https://travel-recommendation-engine-hackathon2023-prometheus.mycluster-wdc04-b3c-16x64-bcd9381b2e59a32911540577d00720d7-0000.us-east.containers.appdomain.cloud/getRecommendations';
 
 
 
@@ -48,10 +48,7 @@ router.get('/register', function(req, res) {
 	res.sendFile(path.join(__dirname + '/public/html/register.html'));
 	//__dirname : It will resolve to your project folder.
 });
-router.get('/graph', function(req, res) {
-	res.sendFile(path.join(__dirname + '/public/html/graph.html'));
-	//__dirname : It will resolve to your project folder.
-});
+
 
 router.post('/getSessionMessage', function(req, res) {
 	var sessionKeyValue = req.body.sessionKey;
@@ -356,7 +353,9 @@ router.post('/registerUser', function(req, res) {
 router.post('/registerInterests', function(req, res) {
 	var avaiableUserId = req.body.avaiableUserId;
 	var selectedInterest = req.body.selectedInterest;
-
+	if (avaiableUserId == undefined) {
+		avaiableUserId = req.session.loggedInUserId;
+	}
 	var callStatus = null;
 
 	mySQLConnection.connect(function(err) {
@@ -377,9 +376,9 @@ router.post('/registerInterests', function(req, res) {
 
 		}
 		sql = "INSERT INTO opdb.tr_traveller_interest VALUES " + insertData;
-		
+
 		mySQLConnection.query(sql, function(err, result) {
-			
+
 			if (err) {
 				callStatus = { 'status': 'error', 'errorMsg': 'There is some technical issue.Please try after some time.' };
 				res.send(callStatus);
@@ -454,7 +453,7 @@ router.post('/getRecomondation', function(req, res) {
 
 	request.post({
 		headers: { 'content-type': 'application/json' },
-		url:recomondationURL ,
+		url: recomondationURL,
 		body: recomondationInputList,
 		json: true
 	}, function(error, response, body) {
@@ -487,7 +486,7 @@ router.post('/logoutUser', function(req, res) {
 router.post('/openGraph', function(req, res) {
 	var graphInput = req.body.graphInput;
 	var graphType = req.body.graphType;
-	
+
 
 	if (graphType == 'fullGraph') {
 
@@ -502,7 +501,7 @@ router.post('/openGraph', function(req, res) {
 				callStatus = { 'status': 'error', 'errorMsg': 'There is some technical issue in retriving the information.' };
 
 			} else {
-				
+
 				callStatus = { 'status': 'success', 'graphData': body };
 			}
 
@@ -523,7 +522,7 @@ router.post('/openGraph', function(req, res) {
 				callStatus = { 'status': 'error', 'errorMsg': 'There is some technical issue in retriving the information.' };
 
 			} else {
-				
+
 				callStatus = { 'status': 'success', 'graphData': body };
 			}
 
@@ -531,6 +530,112 @@ router.post('/openGraph', function(req, res) {
 			res.send(callStatus);
 		});
 	}
+
+
+});
+
+router.post('/updateUserInterest', function(req, res) {
+
+
+
+	var currentUserId = req.session.loggedInUserId;
+	var callStatus = null;
+
+	mySQLConnection.connect(function(err) {
+		if (err) {
+			callStatus = { 'status': 'error', 'errorMsg': 'There is some technical issue.Please try after some time' };
+
+			res.send(callStatus);
+		}
+
+		var sql = "";
+
+		sql = "DELETE FROM opdb.tr_traveller_interest WHERE traveller_id=" + currentUserId;
+
+		mySQLConnection.query(sql, function(err, result) {
+
+			if (err) {
+				callStatus = { 'status': 'error', 'errorMsg': 'There is some technical issue.Please try after some time.' };
+				res.send(callStatus);
+
+			} else {
+
+				callStatus = { 'status': 'success' };
+
+				res.send(callStatus);
+			}
+
+		});
+	});
+
+
+});
+
+router.post('/updateUserTravel', function(req, res) {
+
+
+	var locationId = req.body.locationId;
+	var currentUserId = req.session.loggedInUserId;
+	var callStatus = null;
+
+	mySQLConnection.connect(function(err) {
+		if (err) {
+			callStatus = { 'status': 'error', 'errorMsg': 'There is some technical issue.Please try after some time' };
+
+			res.send(callStatus);
+		}
+
+		var sql = "";
+
+		sql = "select count(*) as count from opdb.tr_traveller_location where  traveller_id=" + currentUserId + " and location_id=" + locationId;
+
+		mySQLConnection.query(sql, function(err, result) {
+
+			if (err) {
+				callStatus = { 'status': 'error', 'errorMsg': 'There is some technical issue.Please try after some time.' };
+				res.send(callStatus);
+
+			} else {
+				var resultCount = result[0].count;
+				if (resultCount == 0) {
+					mySQLConnection.connect(function(err) {
+						if (err) {
+							callStatus = { 'status': 'error', 'errorMsg': 'There is some technical issue.Please try after some time' };
+
+							res.send(callStatus);
+						}
+
+						var sqlInsert = "";
+
+						sqlInsert = "INSERT INTO opdb.tr_traveller_location values ("+currentUserId+","+locationId+")";
+
+						mySQLConnection.query(sqlInsert, function(err, result) {
+
+							if (err) {
+								callStatus = { 'status': 'error', 'errorMsg': 'There is some technical issue.Please try after some time.' };
+								
+
+							} else {
+								callStatus = { 'status': 'success', 'message': 'Your travel request is successfully updated.' };
+
+                                console.log(callStatus);
+								
+							}
+                           res.send(callStatus);
+						});
+					});
+
+				} else {
+					callStatus = { 'status': 'success', 'message': 'You have already opted to travell there.' };
+					res.send(callStatus);
+				}
+
+                 
+				
+			}
+
+		});
+	});
 
 
 });
