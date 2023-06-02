@@ -95,10 +95,12 @@
 			</nav>
 
 
-			<aside class="main-sidebar sidebar-dark-primary elevation-4">
+			<aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: #212529;">
+				
+				<div  style="font-weight: 500;vertical-align: middle;text-align: center;padding: 20px 0 0 5px;font-size: 15px;margin: 0px 10px;">&nbsp;&nbsp;&nbsp;&nbsp;<i class="fas fa-user-friends"></i>&nbsp;&nbsp;Prometheus Team</div>	
+				
 				<div
-					class="sidebar os-host os-theme-light os-host-overflow os-host-overflow-y os-host-resize-disabled os-host-scrollbar-horizontal-hidden os-host-transition"
-					style="background-color: #212529;">
+					class="sidebar os-host os-theme-light os-host-overflow os-host-overflow-y os-host-resize-disabled os-host-scrollbar-horizontal-hidden os-host-transition" style="background-color: #212529;">
 					<div class="os-resize-observer-host observed">
 						<div class="os-resize-observer" style="left: 0px; right: auto;"></div>
 					</div>
@@ -139,6 +141,7 @@
 
 
 									</ul>
+									<br>
 									<button type="button" class="btn btn-success"
 										ng-disabled="disableEditInterest"
 										ng-click="editUserInterest()" style="size: 20px;">
@@ -316,7 +319,7 @@
 																		aria-expanded="false"
 																		ng-repeat-start="recomondation in listOfRecomondation"
 																		ng-click="showHideRow(recomondation.rank);">
-																		<td title="some text">{{recomondation.nodeID}}</td>
+																		<td title="some text">{{recomondation.rank}}</td>
 
 																		<td title="some text">{{recomondation.nodeName}}</td>
 																		<td title="some text">{{recomondation.state}}</td>
@@ -363,7 +366,8 @@
 																							<button
 																								ng-click="saveLocation(recomondation.nodeID)"
 																								type="button" class="btn btn-success">
-																								Let's go to  {{recomondation.nodeName}} &nbsp;&nbsp;<span
+																								Let's go to {{recomondation.nodeName}}
+																								&nbsp;&nbsp;<span
 																									class="fa-sharp fa-solid fa-chart-scatter"></span>
 																							</button>
 
