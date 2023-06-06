@@ -447,15 +447,33 @@ prometheusHackathonModuleApp.controller("homePageController", function($scope, $
 	$scope.editInterestBackup = [];
 	$scope.disableEditInterest = true;
 	$scope.showEditButton = true;
+	$scope.errorMessage = '';
+	$scope.infoMessage = '';
 
-	$scope.toggleFeaturesSelection = function toggleSelection(userSelection, index, typeEven, $typeOdd, section) {
+
+	$http.post('/getSessionMessage', {
+		'sessionKey': 'homePageInfo'
+
+	}).then(function(response) {
+
+		var dataRetruned = response.data;
+
+		if (dataRetruned.type.trim() == 'Message') {
+
+			$scope.infoMessage = dataRetruned.message;
+		}
+
+	});
+
+	$scope.toggleFeaturesSelection = function toggleSelection(userSelection, index, typeEven, typeOdd, section) {
+		$scope.errorMessage = '';
+		$scope.infoMessage = '';
 		var idx = $scope.userSelection.indexOf(userSelection.feature);
 		var idxBK = $scope.userSelectionBak.indexOf(userSelection.feature);
 		$scope.errorMessage = '';
 		var errorUsed = false;
 		// Is currently selected
-		console.log($scope.userSelectionBak);
-
+	
 		if (idxBK > -1) {
 			var elementName = '';
 			if (typeEven) {
@@ -488,8 +506,7 @@ prometheusHackathonModuleApp.controller("homePageController", function($scope, $
 
 		// Is newly selected
 		else {
-
-			if ($scope.userSelection.length >= 3) {
+			if ($scope.userSelectionBak.length >= 3) {
 				if (!errorUsed) {
 					$scope.errorMessage = 'Maximum 3 selections are allowed.';
 					var elementName = '';
@@ -513,8 +530,8 @@ prometheusHackathonModuleApp.controller("homePageController", function($scope, $
 					document.getElementById(elementName).checked = false;
 				}
 
-				
-				$scope.userSelectionBak.push(userSelection.feature);
+
+			//	$scope.userSelectionBak.push(userSelection.feature);
 
 			} else {
 				$scope.userSelection.push(userSelection.feature);
@@ -565,7 +582,7 @@ prometheusHackathonModuleApp.controller("homePageController", function($scope, $
 
 						if ($scope.listOfInterestsNames.includes(currentListOfInterest[i].interest)) {
 							loopJsonObject = { 'interest': currentListOfInterest[i].interest, 'prefimg': currentListOfInterest[i].prefimg, 'select': true };
-							
+
 							$scope.editInterest.push(currentListOfInterest[i].interest);
 							$scope.editInterestBackup.push(currentListOfInterest[i].interest);
 						} else {
@@ -576,7 +593,7 @@ prometheusHackathonModuleApp.controller("homePageController", function($scope, $
 
 
 					$scope.editInterests = currentListOfInterestArray;
-					
+
 
 				}
 
@@ -590,6 +607,8 @@ prometheusHackathonModuleApp.controller("homePageController", function($scope, $
 	});
 
 	$scope.doRecomondationSearch = function doRecomondationSearch() {
+		$scope.errorMessage = '';
+		$scope.infoMessage = '';
 
 		if ($scope.interestNotAdded) {
 			for (var i = 0; i < $scope.listOfInterests.length; i++) {
@@ -641,27 +660,25 @@ prometheusHackathonModuleApp.controller("homePageController", function($scope, $
 	};
 
 	$scope.showHideRow = function showHideRow(rowIndex) {
-		if ($scope.currentSelectedRow != rowIndex) {
+		$scope.errorMessage = '';
+		$scope.infoMessage = '';
+		if (rowIndex != undefined && $scope.selectedRow != rowIndex) {
 			$scope.selectedRow = rowIndex;
-			$scope.selectedRowDisplay = false;
+
 			$scope.currentSelectedRow = rowIndex;
 
+
 		} else {
-			if ($scope.selectedRowDisplay) {
-				$scope.selectedRow = rowIndex;
-				$scope.selectedRowDisplay = false;
-				$scope.currentSelectedRow = rowIndex;
-			} else {
-				$scope.selectedRow = -1;
-				$scope.selectedRowDisplay = true;
-				$scope.currentSelectedRow = -1;
-			}
+			$scope.currentSelectedRow = -1;
+			$scope.selectedRow = -1;
 		}
 
 
 
 	};
 	$scope.logoutUser = function() {
+		$scope.errorMessage = '';
+		$scope.infoMessage = '';
 		$http.post('/logoutUser', {}).then(function(response) {
 			var dataRetruned = response.data;
 			if (dataRetruned.status = 'success') {
@@ -678,6 +695,8 @@ prometheusHackathonModuleApp.controller("homePageController", function($scope, $
 		});
 	};
 	$scope.openGraph = function openGraph(graphType, locationId) {
+		$scope.errorMessage = '';
+		$scope.infoMessage = '';
 		var graphInput = undefined;
 
 		if (graphType == 'rowGraph') {
@@ -759,12 +778,16 @@ prometheusHackathonModuleApp.controller("homePageController", function($scope, $
 	};
 
 	$scope.closeGraph = function closeGraph() {
+		$scope.errorMessage = '';
+		$scope.infoMessage = '';
 		var popUp = document.querySelector(".full-screen");
 		popUp.classList.toggle('hidden-pop');
 		$scope.showCloseButton = false;
 
 	};
 	$scope.toggleEditSelection = function toggleSelection(selectedInterest, index) {
+		$scope.errorMessage = '';
+		$scope.infoMessage = '';
 		var idx = $scope.editInterest.indexOf(selectedInterest.interest);
 		var idxBK = $scope.editInterestBackup.indexOf(selectedInterest.interest);
 		var errorUsed = false;
@@ -786,6 +809,7 @@ prometheusHackathonModuleApp.controller("homePageController", function($scope, $
 
 
 		} else {
+
 
 			if ($scope.editInterest.length >= 3) {
 				if (!errorUsed) {
@@ -809,36 +833,47 @@ prometheusHackathonModuleApp.controller("homePageController", function($scope, $
 
 	};
 	$scope.editUserInterest = function editUserInterest() {
-		
+
+
 		$http.post('/updateUserInterest', {}).then(function(response) {
+			$scope.errorMessage = '';
+			$scope.infoMessage = '';
 			var dataRetruned = response.data;
 			if (dataRetruned.status = 'success') {
+				if ($scope.editInterest.length > 0) {
+					$http.post('/registerInterests', {
+						selectedInterest: $scope.editInterest
+					}).then(function(responsePref) {
+						var responseStatus = responsePref.data.status;
 
-				$http.post('/registerInterests', {
-					selectedInterest: $scope.editInterest
-				}).then(function(responsePref) {
-					var responseStatus = responsePref.data.status;
+
+						if (responseStatus == 'error') {
+							$scope.errorMessage = responsePref.data.errorMsg;
+							$window.location.replace = '/loginPage';
+
+						} else {
+							$scope.infoMessage = "User Interest is successfully updated";
+							$window.location.href = '/loginPage';
+
+						}
 
 
-					if (responseStatus == 'error') {
-						$scope.errorMessage = responsePref.data.errorMsg;
+
+					}).catch(function(errorPref) {
+						$scope.errorMessage = 'There is some Technical issues. Please try after some time.';
 						$window.location.replace = '/loginPage';
 
-					} else {
-						$scope.infoMessage = "User Interest is successfully updated";
-						$window.location.href = '/loginPage';
-
-					}
 
 
+					});
 
-				}).catch(function(errorPref) {
-					$scope.errorMessage = 'There is some Technical issues. Please try after some time.';
-					$window.location.replace = '/loginPage';
+				} else {
+					$scope.infoMessage = "User Interest is successfully updated";
+					$window.location.href = '/loginPage';
+				}
 
 
 
-				});
 
 			} else {
 				$scope.errorMessage = dataRetruned.errorMsg;
@@ -854,17 +889,22 @@ prometheusHackathonModuleApp.controller("homePageController", function($scope, $
 
 		$scope.showEditButton = true;
 		$scope.disableEditInterest = true;
+
 	};
 	$scope.enableInterestEdit = function editInterest() {
+		$scope.errorMessage = '';
+		$scope.infoMessage = '';
 		$scope.showEditButton = false;
 		$scope.disableEditInterest = false;
 	};
 	$scope.saveLocation = function saveLocation(locationId) {
+		$scope.errorMessage = '';
+		$scope.infoMessage = '';
 		$http.post('/updateUserTravel', {
 			locationId: locationId
 		}).then(function(responsePref) {
 			var responseStatus = responsePref.data.status;
-			
+
 
 			if (responseStatus == 'error') {
 				$scope.errorMessage = responsePref.data.errorMsg;
@@ -882,7 +922,7 @@ prometheusHackathonModuleApp.controller("homePageController", function($scope, $
 		}).catch(function(errorPref) {
 			$scope.errorMessage = 'There is some Technical issues. Please try after some time.';
 			$window.location.replace = '/loginPage';
-			
+
 
 
 

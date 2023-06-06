@@ -7,16 +7,16 @@ const router = express.Router();
 const session = require('express-session');
 const mysql = require('mysql2');
 const request = require('request');
-const subGraphURL =process.env.SUB_GRAPH_URL || 'https://travel-recommendation-engine-hackathon2023-prometheus.mycluster-wdc04-b3c-16x64-bcd9381b2e59a32911540577d00720d7-0000.us-east.containers.appdomain.cloud/getSubGraph';
-const fullGraphURL = process.env.FULL_GRAPH_URL ||'https://travel-recommendation-engine-hackathon2023-prometheus.mycluster-wdc04-b3c-16x64-bcd9381b2e59a32911540577d00720d7-0000.us-east.containers.appdomain.cloud/getFullGraph';
-const recomondationURL = process.env.RECO_URL ||'https://travel-recommendation-engine-hackathon2023-prometheus.mycluster-wdc04-b3c-16x64-bcd9381b2e59a32911540577d00720d7-0000.us-east.containers.appdomain.cloud/getRecommendations';
+const subGraphURL = process.env.SUB_GRAPH_URL || 'https://travel-recommendation-engine-hackathon2023-prometheus.mycluster-wdc04-b3c-16x64-bcd9381b2e59a32911540577d00720d7-0000.us-east.containers.appdomain.cloud/getSubGraph';
+const fullGraphURL = process.env.FULL_GRAPH_URL || 'https://travel-recommendation-engine-hackathon2023-prometheus.mycluster-wdc04-b3c-16x64-bcd9381b2e59a32911540577d00720d7-0000.us-east.containers.appdomain.cloud/getFullGraph';
+const recomondationURL = process.env.RECO_URL || 'https://travel-recommendation-engine-hackathon2023-prometheus.mycluster-wdc04-b3c-16x64-bcd9381b2e59a32911540577d00720d7-0000.us-east.containers.appdomain.cloud/getRecommendations';
 
-const mysql_host = process.env.MYSQL_HOST|| "mysql-hackathon2023-prometheus.mycluster-wdc04-b3c-16x64-bcd9381b2e59a32911540577d00720d7-0000.us-east.containers.appdomain.cloud";
-const mysql_port = process.env.MYSQL_PORT||"32350";
-const mysql_user = process.env.MYSQL_USER||"user";
-const mysql_pass = process.env.MYSQL_PASS||"pass";
-const mysql_db = process.env.MYSQL_DB||"opdb";
-console.log(mysql_host);
+const mysql_host = process.env.MYSQL_HOST || "mysql-hackathon2023-prometheus.mycluster-wdc04-b3c-16x64-bcd9381b2e59a32911540577d00720d7-0000.us-east.containers.appdomain.cloud";
+const mysql_port = process.env.MYSQL_PORT || "32350";
+const mysql_user = process.env.MYSQL_USER || "user";
+const mysql_pass = process.env.MYSQL_PASS || "pass";
+const mysql_db = process.env.MYSQL_DB || "opdb";
+
 
 app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded({ extended: true })); // to support URL-encoded bodies
@@ -57,6 +57,7 @@ router.get('/register', function(req, res) {
 router.post('/getSessionMessage', function(req, res) {
 	var sessionKeyValue = req.body.sessionKey;
 	var valueToBeRetruned = '';
+	
 	if (sessionKeyValue == 'firstPageError') {
 		var unAuthAccessMessage = req.session.unAuthAccess;
 		var loginIssueMessage = req.session.loginIssue;
@@ -90,6 +91,15 @@ router.post('/getSessionMessage', function(req, res) {
 			req.session.logout = undefined;
 		}
 		valueToBeRetruned = { 'message': message, 'type': ' Message' };
+	} else if (sessionKeyValue == 'homePageInfo') {
+		var infoMsg=req.session.editIntereest;
+		
+		if(infoMsg!=undefined){
+			message='You have successfully saved the information';
+		}
+		req.session.editIntereest=undefined;
+		valueToBeRetruned = { 'message': message, 'type': ' Message' };
+
 	}
 
 
@@ -565,6 +575,7 @@ router.post('/updateUserInterest', function(req, res) {
 			} else {
 
 				callStatus = { 'status': 'success' };
+				req.session.editIntereest="You have successfully saved the interest.";
 
 				res.send(callStatus);
 			}
@@ -611,21 +622,21 @@ router.post('/updateUserTravel', function(req, res) {
 
 						var sqlInsert = "";
 
-						sqlInsert = "INSERT INTO opdb.tr_traveller_location values ("+currentUserId+","+locationId+")";
+						sqlInsert = "INSERT INTO opdb.tr_traveller_location values (" + currentUserId + "," + locationId + ")";
 
 						mySQLConnection.query(sqlInsert, function(err, result) {
 
 							if (err) {
 								callStatus = { 'status': 'error', 'errorMsg': 'There is some technical issue.Please try after some time.' };
-								
+
 
 							} else {
 								callStatus = { 'status': 'success', 'message': 'Your travel request is successfully updated.' };
 
-                                console.log(callStatus);
 								
+
 							}
-                           res.send(callStatus);
+							res.send(callStatus);
 						});
 					});
 
@@ -634,8 +645,8 @@ router.post('/updateUserTravel', function(req, res) {
 					res.send(callStatus);
 				}
 
-                 
-				
+
+
 			}
 
 		});

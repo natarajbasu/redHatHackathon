@@ -95,12 +95,18 @@
 			</nav>
 
 
-			<aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: #212529;">
-				
-				<div  style="font-weight: 500;vertical-align: middle;text-align: center;padding: 20px 0 0 5px;font-size: 15px;margin: 0px 10px;">&nbsp;&nbsp;&nbsp;&nbsp;<i class="fas fa-user-friends"></i>&nbsp;&nbsp;Prometheus Team</div>	
-				
+			<aside class="main-sidebar sidebar-dark-primary elevation-4"
+				style="background-color: #212529;">
+
 				<div
-					class="sidebar os-host os-theme-light os-host-overflow os-host-overflow-y os-host-resize-disabled os-host-scrollbar-horizontal-hidden os-host-transition" style="background-color: #212529;">
+					style="font-weight: 500; vertical-align: middle; text-align: center; padding: 20px 0 0 5px; font-size: 15px; margin: 0px 10px;">
+					&nbsp;&nbsp;&nbsp;&nbsp;<i class="fas fa-user-friends"></i>&nbsp;&nbsp;Prometheus
+					Team
+				</div>
+
+				<div
+					class="sidebar os-host os-theme-light os-host-overflow os-host-overflow-y os-host-resize-disabled os-host-scrollbar-horizontal-hidden os-host-transition"
+					style="background-color: #212529;">
 					<div class="os-resize-observer-host observed">
 						<div class="os-resize-observer" style="left: 0px; right: auto;"></div>
 					</div>
@@ -336,8 +342,8 @@
 																		</td>
 
 																	</tr>
-																	<tr class="expandable-body" ng-repeat-end
-																		ng-if="selectedRow==recomondation.rank">
+																	<tr  ng-repeat-end
+																		ng-show="selectedRow==recomondation.rank" >
 																		<td colspan="5">
 																			<table>
 																				<tbody>
@@ -423,6 +429,7 @@
 
 			<div class="full-screen flex-container-center hidden-pop"
 				id="openPopup"></div>
+			
 
 
 
