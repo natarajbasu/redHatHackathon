@@ -59,7 +59,20 @@ describe('/GET forgetPassword', () => {
 });
 
 describe('/POST getSessionMessage', () => {
-    it('it should Return the session message', (done) => {
+    it('it should Return the firstPageError message', (done) => {
+    chai.request(App)
+        .post('/getSessionMessage')
+        .send({"sessionKey":"firstPageError"})
+        .end((err, res) => {
+                res.should.have.status(200);
+                res.body.should.be.a('object');
+            done();
+        });
+    });
+});
+
+describe('/POST getSessionMessage', () => {
+    it('it should Return the firstPageInfo message', (done) => {
     chai.request(App)
         .post('/getSessionMessage')
         .send({"sessionKey":"firstPageInfo"})
@@ -70,6 +83,20 @@ describe('/POST getSessionMessage', () => {
         });
     });
 });
+
+describe('/POST getSessionMessage', () => {
+    it('it should Return the homePageInfo message', (done) => {
+    chai.request(App)
+        .post('/getSessionMessage')
+        .send({"sessionKey":"homePageInfo"})
+        .end((err, res) => {
+                res.should.have.status(200);
+                res.body.should.be.a('object');
+            done();
+        });
+    });
+});
+
 
 describe('/POST searchUserDetails', () => {
     it('it should Return the user details', (done) => {
@@ -110,20 +137,33 @@ describe('/POST loginUser', () => {
     });
 });
 
-// describe('/POST passwordChange', () => {
-//     it('it should Return the POST status', (done) => {
-//     chai.request(App)
-//         .post('/passwordChange')
-//         .send({
-//             "newPassword":"abc123",
-//             "id":"nbasuibm"})
-//         .end((err, res) => {
-//                 res.should.have.status(200);
-//                 // res.body.should.be.a('object');
-//             done();
-//         });
-//     });
-// });
+describe('/POST passwordChange', () => {
+    it('it should Return the POST status', (done) => {
+    chai.request(App)
+        .post('/passwordChange')
+        .send({
+            "newPassword":"abc123",
+            "id":"53"})
+        .end((err, res) => {
+                res.should.have.status(200);
+            done();
+        });
+    });
+});
+
+describe('/POST passwordChange', () => {
+    it('it should Return the POST status', (done) => {
+    chai.request(App)
+        .post('/passwordChange')
+        .send({
+            "newPassword":"abc123",
+            "id":"153"})
+        .end((err, res) => {
+                res.should.have.status(200);
+            done();
+        });
+    });
+});
 
 describe('/POST getUserInterestList', () => {
     it('it should Return the a list of users interest', (done) => {
@@ -241,11 +281,27 @@ describe('/POST openGraph', () => {
     });
 });
 
+describe('/POST openGraph', () => {
+    it('it should Return the openGraph status', (done) => {
+    chai.request(App)
+        .post('/openGraph')
+        .send({
+            "graphInput": "firstPageInfo",
+            "graphType": "rowGraph" 
+        })
+        .end((err, res) => {
+                res.should.have.status(500);
+                // res.body.should.be.a('object');
+            done();
+        });
+    });
+});
+
 describe('/POST updateUserInterest', () => {
     it('it should Return the updateUserInterest status', (done) => {
     chai.request(App)
         .post('/updateUserInterest')
-        .send({"loggedInUserId":"nbasuibm"})
+        .send({"loggedInUserId":"10"})
         .end((err, res) => {
                 res.should.have.status(200);
                 res.body.should.be.a('object');
@@ -259,7 +315,7 @@ describe('/POST updateUserTravel', () => {
     chai.request(App)
         .post('/updateUserTravel')
         .send({
-            "loggedInUserId": "nbasuibm",
+            "loggedInUserId": "10",
             "locationId": "10"
         })
         .end((err, res) => {
