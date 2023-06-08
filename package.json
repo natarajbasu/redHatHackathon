@@ -18,7 +18,10 @@
     "node-notifier": "^10.0.1",
     "nyc": "^15.1.0",
     "read-excel-file": "^5.6.1",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "chai": "^3.5.0",
+    "chai-http": "^2.0.1",
+    "mocha": "^2.5.3"
   },
   "devDependencies": {
     "chai": "^3.5.0",
