@@ -7,6 +7,7 @@ const router = express.Router();
 const session = require('express-session');
 const mysql = require('mysql2');
 const request = require('request');
+const md5 = require('md5');
 const subGraphURL = process.env.SUB_GRAPH_URL || 'https://travel-recommendation-engine-hackathon2023-prometheus.mycluster-wdc04-b3c-16x64-bcd9381b2e59a32911540577d00720d7-0000.us-east.containers.appdomain.cloud/getSubGraph';
 const fullGraphURL = process.env.FULL_GRAPH_URL || 'https://travel-recommendation-engine-hackathon2023-prometheus.mycluster-wdc04-b3c-16x64-bcd9381b2e59a32911540577d00720d7-0000.us-east.containers.appdomain.cloud/getFullGraph';
 const recomondationURL = process.env.RECO_URL || 'https://travel-recommendation-engine-hackathon2023-prometheus.mycluster-wdc04-b3c-16x64-bcd9381b2e59a32911540577d00720d7-0000.us-east.containers.appdomain.cloud/getRecommendations';
@@ -119,7 +120,8 @@ router.post('/loginUser', function(req, res) {
 
 			res.send(callStatus);
 		}
-		mySQLConnection.query("select * from tr_traveller where username='" + userName + "' AND password='" + password + "'", function(err, result, fields) {
+		console.log(password+" :::: "+md5(password));
+		mySQLConnection.query("select * from tr_traveller where username='" + userName + "' AND password='" + md5(password) + "'", function(err, result, fields) {
 			if (err) {
 				isError = true;
 				callStatus = { 'status': 'error', 'errorMsg': 'There is some technical issue in retriving the information.' };
@@ -213,7 +215,7 @@ router.post('/passwordChange', function(req, res) {
 			callStatus = { 'status': 'error', 'errorMsg': 'There is some technical issue.Please try again after some time.' };
 			res.send(callStatus);
 		}
-		var sql = "UPDATE opdb.tr_traveller SET password = '" + newPassword + "' WHERE traveller_id =" + id;
+		var sql = "UPDATE opdb.tr_traveller SET password = '" + md5(newPassword) + "' WHERE traveller_id =" + id;
 		mySQLConnection.query(sql, function(err, result) {
 			if (err) {
 				callStatus = { 'status': 'error', 'errorMsg': 'There is some technical issue.Please try again after some time.' };
@@ -338,7 +340,7 @@ router.post('/registerUser', function(req, res) {
 		var dateOfBirthDate = new Date(dateOfBirth);
 		var dateOfBirthString = dateOfBirthDate.getFullYear() + "-" + (dateOfBirthDate.getMonth() + 1) + "-" + dateOfBirthDate.getDate();
 
-		var sql = "INSERT INTO opdb.tr_traveller VALUES (" + avaiableUserId + ",'" + firstName + "','" + lastName + "','" + userName + "','" + password + "','" + secretQues + "','" + sectAnswer + "','" + userGender + "','" + dateOfBirthString + "')";
+		var sql = "INSERT INTO opdb.tr_traveller VALUES (" + avaiableUserId + ",'" + firstName + "','" + lastName + "','" + userName + "','" + md5(password) + "','" + secretQues + "','" + sectAnswer + "','" + userGender + "','" + dateOfBirthString + "')";
 
 		mySQLConnection.query(sql, function(err, result) {
 
